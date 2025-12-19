@@ -1,0 +1,19 @@
+---@class Zavigate.Plugin
+---@field setup function setup the plugin with the user options
+---
+---@class Zavigate.Config
+---@field defaults Zavigate.DefaultOptions default plugin options
+---@field options Zavigate.Options merged user and default options
+---@field setup function setup the plugin configuration
+---
+---@class Zavigate.UserOptions
+---@field disable_keymaps? boolean whether the defaykt zavigate keymaps should be disabled
+---
+---@class Zavigate.DefaultOptions
+---@field disable_keymaps boolean whether the default zaivgate keymaps should be disabled (merged from user/default options)
+---
+---@alias Direction
+---| '"left"'
+---| '"right"'
+---| '"up"'
+---| '"down"'
