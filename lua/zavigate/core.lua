@@ -3,14 +3,14 @@ local M = {}
 
 -- Pane Commands
 
----@param direction Direction|nil
-function M.new_pane(direction)
+---@param args string[]
+function M.new_pane(args)
   local util = require("zavigate.util")
 
   local cwd = vim.fn.shellescape(vim.fn.getcwd())
   local shell = vim.env.SHELL
 
-  if direction == nil then
+  if #args == 0 then
     util.zellij_action({
       "new-pane",
       "--close-on-exit",
@@ -23,11 +23,19 @@ function M.new_pane(direction)
     return
   end
 
-  direction = string.lower(direction)
-
-  if not util.validate_directions_dr(direction) then
+  if #args > 1 or not util.validate_directions_dr(string.lower(args[1])) then
+    --check if they have passed in a shell command starting with '-'
+    local first_char = args[1]:sub(1, 1)
+    if first_char == "-" then
+      -- presumably this is a shell command so we will pass them on
+      local command = { "new-pane" }
+      vim.list_extend(command, args)
+      util.zellij_action(command)
+    end
     return
   end
+
+  local direction = string.lower(args[1])
 
   util.zellij_action({
     "new-pane",
@@ -49,7 +57,7 @@ function M.rename_pane() end
 
 function M.resize_pane() end
 
----@param direction Direction
+---@param direction Zavigate.Util.Direction
 function M.move_pane(direction)
   local util = require("zavigate.util")
 

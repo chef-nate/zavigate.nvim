@@ -52,13 +52,13 @@
 ---@field opts? table
 
 -- misc...
----@alias Direction
+---@alias Zavigate.Util.Direction
 ---| '"left"'
 ---| '"right"'
 ---| '"up"'
 ---| '"down"'
 
----@alias DirectionDR
+---@alias Zavigate.Util.DirectionDR
 ---| '"right"'
 ---| '"down"'
 

@@ -13,16 +13,16 @@ end
 
 -- Pane Commands
 
----@param direction Direction|nil
-function M.new_pane(direction)
-  require("zavigate.core").new_pane(direction)
+---@param opts string[]
+function M.new_pane(opts)
+  require("zavigate.core").new_pane(opts)
 end
 
 function M.close_pane()
   require("zavigate.core").close_pane()
 end
 
----@param direction Direction
+---@param direction Zavigate.Util.Direction
 function M.move_pane(direction)
   require("zavigate.core").move_pane(direction)
 end
@@ -38,7 +38,7 @@ end
 -- Tab Commands
 
 -- Misc Commands
----@param direction Direction
+---@param direction Zavigate.Util.Direction
 function M.move_focus(direction)
   require("zavigate.core").move_focus(direction)
 end

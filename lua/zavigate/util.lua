@@ -74,7 +74,7 @@ function M.normalize_fargs(opts)
   return {}
 end
 
----@param direction Direction
+---@param direction Zavigate.Util.Direction|string
 ---@return boolean
 function M.validate_direction_lrud(direction)
   if not M.valid_directions_lrud[direction] then
@@ -85,7 +85,7 @@ function M.validate_direction_lrud(direction)
   return true
 end
 
----@param direction DirectionDR
+---@param direction Zavigate.Util.DirectionDR
 ---@return boolean
 function M.validate_directions_dr(direction)
   if not M.valid_directions_dr[direction] then

@@ -19,8 +19,8 @@ M.subcommand_tbl.NewPane = {
   nargs = Nargs.Many,
 
   impl = function(args, _)
-    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type DirectionDR|nil
-    require("zavigate").new_pane(direction)
+    local args_normalized = require("zavigate.util").normalize_fargs(args)
+    require("zavigate").new_pane(args_normalized)
   end,
 
   complete = function(subcmd_arg_lead)
@@ -46,7 +46,7 @@ M.subcommand_tbl.MovePane = {
   nargs = Nargs.One,
 
   impl = function(args, _)
-    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Direction|nil
+    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Zavigate.Util.Direction|nil
 
     if direction == nil then
       require("zavigate.util").error(
@@ -95,7 +95,7 @@ M.subcommand_tbl.MoveFocus = {
   nargs = Nargs.One,
 
   impl = function(args, _)
-    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Direction|nil
+    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Zavigate.Util.Direction|nil
 
     if direction == nil then
       require("zavigate.util").error(

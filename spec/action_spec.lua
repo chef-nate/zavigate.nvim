@@ -39,4 +39,25 @@ describe("zavigate core", function()
 
     assert.same({ "move-focus", "down" }, calls)
   end)
+
+  --(4) test new_pane custom opts functionality
+  it('testing core.new_pane({"--floating", "--close-on-exit", "-- btm"})', function()
+    core.new_pane({ "--floating", "--close-on-exit", "-- btm" })
+
+    assert.same({ "new-pane", "--floating", "--close-on-exit", "-- btm" }, calls)
+  end)
+
+  --(5) test new pane doesnt work when an invalid single arg is provided
+  it("testing new pane with invalid single arg", function()
+    core.new_pane({ "invalid_option" })
+
+    assert.are_same({}, calls)
+  end)
+
+  --(6) test new pane doesnt work when an invalid multiple arg (>1) is provided
+  it("testing new pane with invalid multiple arg", function()
+    core.new_pane({ "invalid_option", "invalid_option_2" })
+
+    assert.are_same({}, calls)
+  end)
 end)
