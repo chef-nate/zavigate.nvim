@@ -12,6 +12,11 @@ M.valid_directions_lr = {
   right = true,
 }
 
+M.valid_directions_dr = {
+  right = true,
+  down = true,
+}
+
 M.hjkl_map = {
   left = "h",
   right = "l",
@@ -70,10 +75,25 @@ function M.normalize_fargs(opts)
 end
 
 ---@param direction Direction
+---@return boolean
 function M.validate_direction_lrud(direction)
   if not M.valid_directions_lrud[direction] then
-    error(string.format("Invalid direction: %s", tostring(direction)))
+    M.error(string.format("Invalid direction: %s", tostring(direction)), "Zavigate")
+    return false
   end
+
+  return true
+end
+
+---@param direction DirectionDR
+---@return boolean
+function M.validate_directions_dr(direction)
+  if not M.valid_directions_dr[direction] then
+    M.error(string.format("Invalid direction: %s", tostring(direction)), "Zavigate")
+    return false
+  end
+
+  return true
 end
 
 function M.zellij_action(opts)
@@ -109,6 +129,18 @@ end
 ---@param opts? table
 function M.error(msg, title, opts)
   M.notify(msg, title, vim.log.levels.ERROR, opts)
+end
+
+---@param choices string[]
+---@param lead string
+---@return string[]
+function M.complete_from_list(choices, lead)
+  return vim
+    .iter(choices)
+    :filter(function(choice)
+      return choice:find(lead) ~= nil
+    end)
+    :totable()
 end
 
 return M

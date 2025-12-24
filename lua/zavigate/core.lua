@@ -1,3 +1,4 @@
+---@class Zavigate.Core
 local M = {}
 
 -- Pane Commands
@@ -22,7 +23,11 @@ function M.new_pane(direction)
     return
   end
 
-  util.validate_direction_lrud(direction)
+  direction = string.lower(direction)
+
+  if not util.validate_directions_dr(direction) then
+    return
+  end
 
   util.zellij_action({
     "new-pane",
@@ -48,7 +53,11 @@ function M.resize_pane() end
 function M.move_pane(direction)
   local util = require("zavigate.util")
 
-  util.valid_directions_lrud(direction)
+  direction = string.lower(direction)
+
+  if not util.valid_directions_lrud(direction) then
+    return
+  end
 
   util.zellij_action({
     "move-pane",
@@ -81,7 +90,11 @@ function M.move_tab() end
 function M.move_focus(direction)
   local util = require("zavigate.util")
 
-  util.validate_direction_lrud(direction)
+  direction = string.lower(direction)
+
+  if not util.validate_direction_lrud(direction) then
+    return
+  end
 
   -- (1) try Neovim window navigation
   local init_winnr = vim.fn.winnr()

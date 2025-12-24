@@ -1,8 +1,14 @@
+---@class Zavigate.Plugin
 local M = {}
 
----@param opts Zavigate.UserOptions: plugin options
+---@param opts Zavigate.Config.UserOptions: plugin options
 function M.setup(opts)
-  require("zavigate.config").setup(opts)
+  local config = require("zavigate.config")
+  local commands = require("zavigate.commands")
+  local keymaps = require("zavigate.keymaps")
+  config.setup(opts)
+  commands.setup()
+  keymaps.setup(config.options)
 end
 
 -- Pane Commands
