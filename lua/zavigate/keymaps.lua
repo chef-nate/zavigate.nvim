@@ -49,6 +49,13 @@ local default_mappings = {
     opts = { silent = true },
   },
   {
+    keymap = "<A-n>",
+    command = "<cmd>Zavigate NewPane Any<cr>",
+    mode = "n",
+    desc = "Create a New Pane",
+    opts = { silent = true },
+  },
+  {
     keymap = "<A-t>",
     command = "<cmd>Zavigate NewTab<cr>",
     mode = "n",

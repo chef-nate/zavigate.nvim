@@ -10,7 +10,7 @@ function M.new_pane(args)
   local cwd = vim.fn.shellescape(vim.fn.getcwd())
   local shell = vim.env.SHELL
 
-  if #args == 0 then
+  local function spawn_floating_pane()
     util.zellij_action({
       "new-pane",
       "--close-on-exit",
@@ -20,10 +20,17 @@ function M.new_pane(args)
       "--",
       shell,
     })
+  end
+
+  if #args == 0 then
+    spawn_floating_pane()
     return
   end
 
-  if #args > 1 or not util.validate_directions_dr(string.lower(args[1])) then
+  if
+    #args > 1
+    or not util.validate_against_table(util.valid_selection_new_pane, string.lower(args[1]))
+  then
     --check if they have passed in a shell command starting with '-'
     local first_char = args[1]:sub(1, 1)
     if first_char == "-" then
@@ -35,13 +42,29 @@ function M.new_pane(args)
     return
   end
 
-  local direction = string.lower(args[1])
+  local selection = string.lower(args[1])
+
+  if selection == "floating" then
+    spawn_floating_pane()
+    return
+  end
+
+  if selection == "any" then
+    util.zellij_action({
+      "new-pane",
+      "--close-on-exit",
+      "--cwd",
+      cwd,
+      "--",
+      shell,
+    })
+  end
 
   util.zellij_action({
     "new-pane",
     "--close-on-exit",
     "--direction",
-    direction,
+    selection,
     "--cwd",
     cwd,
     "--",
@@ -84,7 +107,10 @@ function M.toggle_pane_fullscreen()
 end
 
 -- Tab Commands
-function M.new_tab() end
+function M.new_tab()
+  local util = require("zavigate.util")
+  util.zellij_action({ "new-tab" })
+end
 
 function M.close_tab() end
 
@@ -94,7 +120,7 @@ function M.move_tab() end
 
 -- Misc Commands
 
----@param direction Direction
+---@param direction Zavigate.Util.Direction
 function M.move_focus(direction)
   local util = require("zavigate.util")
 
@@ -122,8 +148,14 @@ function M.move_focus(direction)
   util.zellij_action({ "move-focus", direction })
 end
 
-function M.lock() end
+function M.lock()
+  local util = require("zavigate.util")
+  util.zellij_action({ "switch-mode", "locked" })
+end
 
-function M.unlock() end
+function M.unlock()
+  local util = require("zavigate.util")
+  util.zellij_action({ "switch-mode", "normal" })
+end
 
 return M

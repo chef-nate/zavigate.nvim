@@ -36,11 +36,22 @@ function M.toggle_pane_fullscreen()
 end
 
 -- Tab Commands
+function M.new_tab()
+  require("zavigate.core").new_tab()
+end
 
 -- Misc Commands
 ---@param direction Zavigate.Util.Direction
 function M.move_focus(direction)
   require("zavigate.core").move_focus(direction)
+end
+
+function M.lock()
+  require("zavigate.core").lock()
+end
+
+function M.unlock()
+  require("zavigate.core").unlock()
 end
 
 return M

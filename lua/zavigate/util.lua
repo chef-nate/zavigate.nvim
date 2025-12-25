@@ -1,5 +1,13 @@
 local M = {}
 
+---@type table<string, boolean>
+M.valid_selection_new_pane = {
+  right = true,
+  down = true,
+  any = true,
+  floating = true,
+}
+
 M.valid_directions_lrud = {
   left = true,
   right = true,
@@ -23,6 +31,29 @@ M.hjkl_map = {
   up = "k",
   down = "j",
 }
+
+---@param table table<string, boolean>
+---@param input string
+---@param throw_on_false boolean?
+---@return boolean
+M.validate_against_table = function(table, input, throw_on_false)
+  -- default value for throw_on_false is true
+  throw_on_false = throw_on_false == nil and true or throw_on_false
+
+  -- check if input is valid against table
+  if not table[input] then
+    if throw_on_false then
+      M.error(
+        string.format("Zavigate: invalid argument '%s' was supplied", tostring(input)),
+        "Zavigate"
+      )
+    end
+    return false
+  end
+
+  -- if not early returned then must be valid
+  return true
+end
 
 -- normalize command vs lua call arguments (single/no arg)
 ---@param opts table|string|nil

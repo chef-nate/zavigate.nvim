@@ -28,6 +28,7 @@ M.subcommand_tbl.NewPane = {
       "Down",
       "Right",
       "Floating",
+      "Any",
     }, subcmd_arg_lead)
   end,
 }
@@ -88,6 +89,13 @@ M.subcommand_tbl.TogglePaneFullscreen = {
 }
 
 -- Tab Subcommands
+M.subcommand_tbl.NewTab = {
+  desc = "Opens a new Zellij tab",
+  nargs = Nargs.None,
+  impl = function(_, _)
+    require("zavigate").new_tab()
+  end,
+}
 
 -- Misc Subcommands
 M.subcommand_tbl.MoveFocus = {
@@ -115,6 +123,24 @@ M.subcommand_tbl.MoveFocus = {
       "Left",
       "Right",
     }, subcmd_arg_lead)
+  end,
+}
+
+M.subcommand_tbl.Lock = {
+  desc = "Lock Zellij",
+  nargs = Nargs.None,
+
+  impl = function(_, _)
+    require("zavigate").lock()
+  end,
+}
+
+M.subcommand_tbl.Unlock = {
+  desc = "Unlock Zellij",
+  nargs = Nargs.None,
+
+  impl = function(_, _)
+    require("zavigate").unlock()
   end,
 }
 
