@@ -1,21 +1,21 @@
---- init.lua
 ---@class Zavigate.Plugin
----@field setup function setup the plugin with the user options
+---plugin entry point
+---@field setup fun(opts: Zavigate.Config.Options.User) setup the plugin with the user options
 
--- config.lua
----@class Zavigate.Config
----@field defaults Zavigate.Config.DefaultOptions default plugin options
----@field options Zavigate.Config.UserOptions merged user and default options
----@field setup function setup the plugin configuration
+---@class Zavigate.Keymaps
+---keymap registration
+---@field setup fun(opts: Zavigate.Config.Options.User) setup keymaps based on user configuration
 
----@class Zavigate.Config.DefaultOptions
----@field disable_keymaps boolean whether the default zaivgate keymaps should be disabled (merged from user/default options)
+---@class Zavigate.Keymaps.Bind
+---defines a single keymap binding
+---@field keymap string
+---@field command string|function
+---@field mode string|string[]
+---@field desc string
+---@field opts? table
 
----@class Zavigate.Config.UserOptions
----@field disable_keymaps? boolean
-
--- core.lua
 ---@class Zavigate.Core
+---core pane and tab integrations
 ---@field new_pane function
 ---@field close_pane function
 ---@field rename_pane function
@@ -30,7 +30,15 @@
 ---@field unlock function
 ---@field lock function
 
--- commands.lua
+---@class Zavigate.Config
+---@field options Zavigate.Config.Options merged user and default options
+---@field setup function setup config and user options
+
+---@class Zavigate.Config.Options
+---@field disable_keymaps boolean whether the default zaivgate keymaps should be disabled (merged from user/default options)
+
+---@class Zavigate.Config.Options.Defaults: Zavigate.Config.Options
+---@class Zavigate.Config.Options.User: Zavigate.Config.Options
 
 ---@class Zavigate.Commands
 ---@field setup function
@@ -43,15 +51,9 @@
 ---@field impl fun(args: string[], opts: table) command implementation
 ---@field complete? fun(subcmd_arg_lead: string): string[] (optional) command completion callback
 
--- keymaps.lua
----@class Zavigate.Keymap.Binding
----@field keymap string
----@field command string|function
----@field mode string|string[]
----@field desc string
----@field opts? table
+---@class Zavigate.Health
+---@field check function runs a vim health check on zavigate.nvim
 
--- misc...
 ---@alias Zavigate.Util.Direction
 ---| '"left"'
 ---| '"right"'

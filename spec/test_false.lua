@@ -1,5 +1,0 @@
-describe("Always false test", function()
-  it("should fail", function()
-    assert.is_true(false)
-  end)
-end)

@@ -8,6 +8,7 @@ M.valid_selection_new_pane = {
   floating = true,
 }
 
+---@type table<string, boolean>
 M.valid_directions_lrud = {
   left = true,
   right = true,
@@ -15,16 +16,19 @@ M.valid_directions_lrud = {
   down = true,
 }
 
+---@type table<string, boolean>
 M.valid_directions_lr = {
   left = true,
   right = true,
 }
 
+---@type table<string, boolean>
 M.valid_directions_dr = {
   right = true,
   down = true,
 }
 
+---@type table<string, string>
 M.hjkl_map = {
   left = "h",
   right = "l",
@@ -55,116 +59,94 @@ M.validate_against_table = function(table, input, throw_on_false)
   return true
 end
 
--- normalize command vs lua call arguments (single/no arg)
----@param opts table|string|nil
----@return string|nil
-function M.normalize_arg(opts)
-  if type(opts) == "table" then
-    if type(opts.args) == "string" and opts.args ~= "" then
-      return opts.args
+---@param arg table|string|nil arg to be normalized
+---@return string|nil normalized the argument as a string ( or nil if no argument supplied )
+function M.normalize_arg(arg)
+  if type(arg) == "table" then
+    if type(arg.args) == "string" and arg.args ~= "" then
+      return arg.args
     else
       return nil
     end
   end
 
-  if type(opts) == "string" or opts == nil then
-    return opts
+  if type(arg) == "string" or arg == nil then
+    return arg
   end
 
   -- fallback for invalid types
   return nil
 end
 
----@param opts table|string|nil
----@return string[]
-function M.normalize_fargs(opts)
+---@param fargs table|string|nil fargs to be normalized
+---@return string[] normalized string array of all fargs supplied
+function M.normalize_fargs(fargs)
   -- (1) command call
-  if type(opts) == "table" and type(opts.fargs) == "table" then
+  if type(fargs) == "table" and type(fargs.fargs) == "table" then
     local t = {}
-    for _, v in ipairs(opts.fargs) do
+    for _, v in ipairs(fargs.fargs) do
       t[#t + 1] = tostring(v)
     end
     return t
   end
 
   -- (2) lua call - multiple args as table
-  if type(opts) == "table" then
+  if type(fargs) == "table" then
     local t = {}
-    for _, v in ipairs(opts) do
+    for _, v in ipairs(fargs) do
       t[#t + 1] = tostring(v)
     end
     return t
   end
 
   -- (3) lua call - single arg
-  if opts ~= nil then
-    return { tostring(opts) }
+  if fargs ~= nil then
+    return { tostring(fargs) }
   end
 
   -- (4) no args
   return {}
 end
 
----@param direction Zavigate.Util.Direction|string
----@return boolean
-function M.validate_direction_lrud(direction)
-  if not M.valid_directions_lrud[direction] then
-    M.error(string.format("Invalid direction: %s", tostring(direction)), "Zavigate")
-    return false
-  end
-
-  return true
-end
-
----@param direction Zavigate.Util.DirectionDR
----@return boolean
-function M.validate_directions_dr(direction)
-  if not M.valid_directions_dr[direction] then
-    M.error(string.format("Invalid direction: %s", tostring(direction)), "Zavigate")
-    return false
-  end
-
-  return true
-end
-
+---@param opts string[] array of commands for 'zellij action ...' to execute
 function M.zellij_action(opts)
   local cmd = vim.list_extend({ "zellij", "action" }, opts)
   vim.system(cmd)
 end
 
----@param msg string
+---@param msg string -- message to notify
 ---@param title string -- typically name of ucmd/function calling this
 ---@param lvl? number -- defaults to INFO
----@param opts? table -- any additional opts
+---@param opts? table<string, any> -- any additional opts
 function M.notify(msg, title, lvl, opts)
   local notify_opts = vim.tbl_deep_extend("force", {}, { title = title }, opts or {})
   vim.notify(msg, lvl or vim.log.levels.INFO, notify_opts)
 end
 
----@param msg string
+---@param msg string -- message to notify as info
 ---@param title string -- typically name of ucmd/function calling this
----@param opts? table -- any additional vim.notify options
+---@param opts? table<string, any> -- any additional vim.notify options
 function M.info(msg, title, opts)
   M.notify(msg, title, vim.log.levels.INFO, opts)
 end
 
----@param msg string
----@param title string
----@param opts? table
+---@param msg string -- message to notify as a warning
+---@param title string -- typically name of ucmd/function calling this
+---@param opts? table<string, any> -- any additional vim.notify options
 function M.warn(msg, title, opts)
   M.notify(msg, title, vim.log.levels.WARN, opts)
 end
 
----@param msg string
----@param title string
----@param opts? table
+---@param msg string -- message to notify as an error
+---@param title string -- typically name of ucmd/function calling this
+---@param opts? table<string, any> -- any additional vim.notify options
 function M.error(msg, title, opts)
   M.notify(msg, title, vim.log.levels.ERROR, opts)
 end
 
----@param choices string[]
----@param lead string
----@return string[]
+---@param choices string[] -- list of all possible autocomplete choices
+---@param lead string -- characters to autocomplete from
+---@return string[] -- array containing all valid autocomplete choices
 function M.complete_from_list(choices, lead)
   return vim
     .iter(choices)

@@ -53,23 +53,23 @@ opts = {
 #### Default keymaps
 | Key bind | Command | Description |
 |----------|---------|-------------|
-| <A-h> | :Zavigate MoveFocus Left |Move Focus: Left |
-| <A-j> | :Zavigate MoveFocus Down |Move Focus: Down |
-| <A-k> | :Zavigate MoveFocus Up |Move Focus: Up |
-| <A-l> | :Zavigate MoveFocus Right |Move Focus: Right |
-| <A-f> | :Zavigate ToggleFloatingPanes | Toggle Floating Pane Visibility |
-| <A-x> | :Zavigate ClosePane | Close Active Pane |
-| <A-n> | :Zavigate NewPane Any | Create a New Zellij Pane in whichever direction has the most space |
-| <A-t> | :Zavigate NewTab | Create a New Zellij Tab |
-| <C-p>h | :Zavigate MoveFocus Left |Move Focus: Left |
-| <C-p>j | :Zavigate MoveFocus Down |Move Focus: Down |
-| <C-p>k | :Zavigate MoveFocus Up |Move Focus: Up |
-| <C-p>l | :Zavigate MoveFocus Right |Move Focus: Right |
-| <C-p>x | :Zavigate ClosePane | Close Active Pane |
-| <C-p>d | :Zavigate NewPane Down | Create a New Zellij Pane Downwards |
-| <C-p>r | :Zavigate NewPane Right | Create a New Zellij Pane Rightwards |
-| <C-p>f | :Zavigate TogglePaneFullscreen | Toggle Pane Fullscreen |
-| <C-p>c | :Zavigate RenamePane| Rename the Active Pane |
+| alt-h | :Zavigate MoveFocus Left |Move Focus: Left |
+| alt-j | :Zavigate MoveFocus Down |Move Focus: Down |
+| alt-k | :Zavigate MoveFocus Up |Move Focus: Up |
+| alt-l | :Zavigate MoveFocus Right |Move Focus: Right |
+| alt-f | :Zavigate ToggleFloatingPanes | Toggle Floating Pane Visibility |
+| alt-x | :Zavigate ClosePane | Close Active Pane |
+| alt-n | :Zavigate NewPane Any | Create a New Zellij Pane in whichever direction has the most space |
+| alt-t | :Zavigate NewTab | Create a New Zellij Tab |
+| ctrl-p h | :Zavigate MoveFocus Left |Move Focus: Left |
+| ctrl-p j | :Zavigate MoveFocus Down |Move Focus: Down |
+| ctrl-p k | :Zavigate MoveFocus Up |Move Focus: Up |
+| ctrl-p l | :Zavigate MoveFocus Right |Move Focus: Right |
+| ctrl-p x | :Zavigate ClosePane | Close Active Pane |
+| ctrl-p d | :Zavigate NewPane Down | Create a New Zellij Pane Downwards |
+| ctrl-p r | :Zavigate NewPane Right | Create a New Zellij Pane Rightwards |
+| ctrl-p f | :Zavigate TogglePaneFullscreen | Toggle Pane Fullscreen |
+| ctrl-p c | :Zavigate RenamePane| Rename the Active Pane |
 
 
 ## Features
@@ -90,8 +90,10 @@ All Commands:
 :Zavigate MovePane Direction
 :Zavigate ToggleFloatingPanes
 :Zavigate TogglePaneFullscreen
+:Zavigate RenamePane Name|None
 ""Tabs
 :Zavigate NewTab
+:Zavigate RenameTab Name|None
 ""Misc
 :Zavigate MoveFocus Direction
 :Zavigate Lock
@@ -109,8 +111,10 @@ All Functions:
 .move_pane(direction)
 .toggle_floating_panes()
 .toggle_pane_fullscreen()
+.rename_pane(name|none)
 -- Tabs
 .new_tab()
+.rename_tab(name|none)
 -- Misc
 .move_focus(direction)
 .lock()

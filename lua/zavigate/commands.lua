@@ -5,18 +5,19 @@ local M = {}
 M.subcommand_tbl = {}
 
 ---@enum NArgs
-local Nargs = {
-  None = "0",
-  One = "1",
-  Many = "*",
-  ZeroOrOne = "?",
-  OneOrMore = "+",
+local NARGS = {
+  NONE = "0",
+  ONE = "1",
+  MANY = "*",
+  ZERO_OR_ONE = "?",
+  ONE_OR_MORE = "+",
 }
 
 -- Pane Subcommands
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.NewPane = {
   desc = "Opens a new Zellij pane in the specified direction.",
-  nargs = Nargs.Many,
+  nargs = NARGS.MANY,
 
   impl = function(args, _)
     local args_normalized = require("zavigate.util").normalize_fargs(args)
@@ -33,18 +34,20 @@ M.subcommand_tbl.NewPane = {
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.ClosePane = {
   desc = "",
-  nargs = Nargs.None,
+  nargs = NARGS.NONE,
 
   impl = function(_, _)
     require("zavigate").close_pane()
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.MovePane = {
   desc = "",
-  nargs = Nargs.One,
+  nargs = NARGS.ONE,
 
   impl = function(args, _)
     local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Zavigate.Util.Direction|nil
@@ -70,37 +73,71 @@ M.subcommand_tbl.MovePane = {
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.ToggleFloatingPanes = {
   desc = "",
-  nargs = Nargs.None,
+  nargs = NARGS.NONE,
 
   impl = function(_, _)
     require("zavigate").toggle_floating_panes()
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.TogglePaneFullscreen = {
   desc = "",
-  nargs = Nargs.None,
+  nargs = NARGS.NONE,
 
   impl = function(_, _)
     require("zavigate").toggle_pane_fullscreen()
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
+M.subcommand_tbl.RenamePane = {
+  desc = "",
+  nargs = NARGS.ZERO_OR_ONE,
+
+  impl = function(args, _)
+    local args_normalized = require("zavigate.util").normalize_arg(args[1])
+    if args_normalized == nil then
+      args_normalized = ""
+    end
+
+    require("zavigate").rename_pane(args_normalized)
+  end,
+}
+
 -- Tab Subcommands
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.NewTab = {
   desc = "Opens a new Zellij tab",
-  nargs = Nargs.None,
+  nargs = NARGS.NONE,
   impl = function(_, _)
     require("zavigate").new_tab()
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
+M.subcommand_tbl.RenameTab = {
+  desc = "Renames the active tab",
+  nargs = NARGS.ZERO_OR_ONE,
+
+  impl = function(args, _)
+    local args_normalized = require("zavigate.util").normalize_arg(args[1])
+    if args_normalized == nil then
+      args_normalized = ""
+    end
+
+    require("zavigate").rename_tab(args_normalized)
+  end,
+}
+
 -- Misc Subcommands
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.MoveFocus = {
   desc = "",
-  nargs = Nargs.One,
+  nargs = NARGS.ONE,
 
   impl = function(args, _)
     local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Zavigate.Util.Direction|nil
@@ -126,24 +163,27 @@ M.subcommand_tbl.MoveFocus = {
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.Lock = {
   desc = "Lock Zellij",
-  nargs = Nargs.None,
+  nargs = NARGS.NONE,
 
   impl = function(_, _)
     require("zavigate").lock()
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.Unlock = {
   desc = "Unlock Zellij",
-  nargs = Nargs.None,
+  nargs = NARGS.NONE,
 
   impl = function(_, _)
     require("zavigate").unlock()
   end,
 }
 
+---@param opts { fargs: string[] }
 M.zavigate_cmd = function(opts)
   local fargs = opts.fargs
   local subcommand_key = fargs[1]
@@ -161,9 +201,8 @@ M.zavigate_cmd = function(opts)
 end
 
 function M.setup()
-  print("Zavigate Command Setup Called")
   vim.api.nvim_create_user_command("Zavigate", M.zavigate_cmd, {
-    nargs = Nargs.OneOrMore,
+    nargs = NARGS.ONE_OR_MORE,
     desc = "Zavigate Description",
     complete = function(arg_lead, cmdline, _)
       -- Get the subcommand.

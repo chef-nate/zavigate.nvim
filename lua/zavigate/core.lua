@@ -76,7 +76,20 @@ function M.close_pane()
   require("zavigate.util").zellij_action({ "close-pane" })
 end
 
-function M.rename_pane() end
+---@param name string
+function M.rename_pane(name)
+  ---@param n string
+  local apply_rename = function(n)
+    require("zavigate.util").zellij_action({ "rename-pane", n })
+  end
+
+  if name == "" then
+    vim.ui.input({ prompt = "New pane name: " }, apply_rename)
+    return
+  end
+
+  apply_rename(name)
+end
 
 function M.resize_pane() end
 
@@ -114,7 +127,19 @@ end
 
 function M.close_tab() end
 
-function M.rename_tab() end
+function M.rename_tab(name)
+  ---@param n string
+  local apply_rename = function(n)
+    require("zavigate.util").zellij_action({ "rename-tab", n })
+  end
+
+  if name == "" then
+    vim.ui.input({ prompt = "New tab name: " }, apply_rename)
+    return
+  end
+
+  apply_rename(name)
+end
 
 function M.move_tab() end
 
@@ -126,7 +151,7 @@ function M.move_focus(direction)
 
   direction = string.lower(direction)
 
-  if not util.validate_direction_lrud(direction) then
+  if not util.validate_against_table(util.valid_directions_lrud, direction) then
     return
   end
 

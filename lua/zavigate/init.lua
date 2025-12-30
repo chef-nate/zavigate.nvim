@@ -1,13 +1,19 @@
 ---@class Zavigate.Plugin
 local M = {}
 
----@param opts Zavigate.Config.UserOptions: plugin options
+---@param opts Zavigate.Config.Options.User: plugin options
 function M.setup(opts)
   local config = require("zavigate.config")
   local commands = require("zavigate.commands")
   local keymaps = require("zavigate.keymaps")
+
+  -- setup user config
   config.setup(opts)
+
+  -- setup command line commands
   commands.setup()
+
+  -- setup keyamps based on config options
   keymaps.setup(config.options)
 end
 
@@ -35,12 +41,22 @@ function M.toggle_pane_fullscreen()
   require("zavigate.core").toggle_pane_fullscreen()
 end
 
+function M.rename_pane(name)
+  require("zavigate.core").rename_pane(name)
+end
+
 -- Tab Commands
 function M.new_tab()
   require("zavigate.core").new_tab()
 end
 
+---@param name string
+function M.rename_tab(name)
+  require("zavigate.core").rename_tab(name)
+end
+
 -- Misc Commands
+
 ---@param direction Zavigate.Util.Direction
 function M.move_focus(direction)
   require("zavigate.core").move_focus(direction)

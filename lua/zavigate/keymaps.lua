@@ -1,9 +1,7 @@
 ---@class Zavigate.Keymaps
----@field setup function
 local M = {}
 
--- Bind | Command | Mode | Opts
----@type Zavigate.Keymap.Binding[]
+---@type Zavigate.Keymaps.Bind[]
 local default_mappings = {
   -- Alt Key Shortcut Pane Keymaps
   {
@@ -127,7 +125,7 @@ local default_mappings = {
   },
 }
 
----@param opts Zavigate.Config.UserOptions
+---@param opts Zavigate.Config.Options.User
 function M.setup(opts)
   if not opts.disable_keymaps then
     M.setup_defaults()
