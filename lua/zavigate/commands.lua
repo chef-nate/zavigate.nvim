@@ -1,10 +1,30 @@
+---@mod zavigate.commands
+
 ---@class Zavigate.Commands
+---User command definitions for zavigate
+---@field setup fun(): nil
+---@field zavigate_cmd fun(opts: {fargs:  string[]}): nil
+---@field subcommand_tbl table<string, Zavigate.Commands.Subcommand>
 local M = {}
+
+---@class Zavigate.Commands.Subcommand
+---A single subcommand for the ':Zavigate' prefix
+---@field desc string Subcommand description
+---@field nargs NArgsValue Vim command nargs value
+---@field impl fun(args: string[], opts: table) Implementation
+---@field complete? fun(subcmd_arg_lead: string): string[] Completion callback
+
+---@alias NArgsValue
+---| "0" -- none
+---| "1" -- exactly 1
+---| "*" -- any number (0+)
+---| "?" -- 0 or 1
+---| "+" -- 1 or more
 
 ---@type table<string, Zavigate.Commands.Subcommand>
 M.subcommand_tbl = {}
 
----@enum NArgs
+---@type table<string, NArgsValue>
 local NARGS = {
   NONE = "0",
   ONE = "1",
@@ -195,6 +215,7 @@ M.zavigate_cmd = function(opts)
       string.format("Zavigate: Unknown Command: %s", tostring(subcommand_key)),
       "Zavigate"
     )
+    return
   end
 
   subcommand.impl(args, opts)

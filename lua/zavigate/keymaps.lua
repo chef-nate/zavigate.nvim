@@ -1,5 +1,18 @@
+---@mod zavigate.keymaps
+
 ---@class Zavigate.Keymaps
+---Keymap registration
+---@field setup fun(opts: Zavigate.Config.Options.User): nil Setup keymaps based on user configuration
+---@field setup_defaults fun(): nil Register default mappings
 local M = {}
+
+---@class Zavigate.Keymaps.Bind
+---Defines a single keymap binding
+---@field keymap string
+---@field command string|function
+---@field mode string|string[]
+---@field desc string
+---@field opts? table
 
 ---@type Zavigate.Keymaps.Bind[]
 local default_mappings = {
@@ -126,12 +139,14 @@ local default_mappings = {
 }
 
 ---@param opts Zavigate.Config.Options.User
+---@return nil
 function M.setup(opts)
   if not opts.disable_keymaps then
     M.setup_defaults()
   end
 end
 
+---@return nil
 function M.setup_defaults()
   for _, map in ipairs(default_mappings) do
     vim.keymap.set(

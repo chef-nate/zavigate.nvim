@@ -1,3 +1,7 @@
+---@mod zavigate.util
+
+---@class Zavigate.Util
+---Shared utilities used across the plugin
 local M = {}
 
 ---@type table<string, boolean>
@@ -36,16 +40,16 @@ M.hjkl_map = {
   down = "j",
 }
 
----@param table table<string, boolean>
+---@param tbl table<string, boolean>
 ---@param input string
 ---@param throw_on_false boolean?
 ---@return boolean
-M.validate_against_table = function(table, input, throw_on_false)
+M.validate_against_table = function(tbl, input, throw_on_false)
   -- default value for throw_on_false is true
   throw_on_false = throw_on_false == nil and true or throw_on_false
 
   -- check if input is valid against table
-  if not table[input] then
+  if not tbl[input] then
     if throw_on_false then
       M.error(
         string.format("Zavigate: invalid argument '%s' was supplied", tostring(input)),
@@ -109,6 +113,7 @@ function M.normalize_fargs(fargs)
 end
 
 ---@param opts string[] array of commands for 'zellij action ...' to execute
+---@return nil
 function M.zellij_action(opts)
   local cmd = vim.list_extend({ "zellij", "action" }, opts)
   vim.system(cmd)

@@ -1,4 +1,20 @@
+---@mod zavigate.core
+
 ---@class Zavigate.Core
+---core pane and tab integrations
+---@field new_pane fun(direction_or_opts?:Zavigate.Util.DirectionDR|string[]): nil
+---@field close_pane fun(): nil
+---@field rename_pane fun(name?: string): nil
+---@field resize_pane fun(direction: Zavigate.Util.Direction): nil
+---@field toggle_floating_panes fun(): nil
+---@field toggle_pane_fullscreen fun(): nil
+---@field new_tab fun(): nil
+---@field close_tab fun(): nil
+---@field rename_tab fun(name?: string): nil
+---@field move_tab fun(): nil
+---@field move_focus fun(direction: Zavigate.Util.Direction): nil
+---@field unlock fun(): nil
+---@field lock fun(): nil
 local M = {}
 
 -- Pane Commands
@@ -76,13 +92,14 @@ function M.close_pane()
   require("zavigate.util").zellij_action({ "close-pane" })
 end
 
----@param name string
+---@param name string|nil
 function M.rename_pane(name)
   ---@param n string
   local apply_rename = function(n)
     require("zavigate.util").zellij_action({ "rename-pane", n })
   end
 
+  name = name or ""
   if name == "" then
     vim.ui.input({ prompt = "New pane name: " }, apply_rename)
     return
@@ -127,12 +144,14 @@ end
 
 function M.close_tab() end
 
+---@param name string|nil
 function M.rename_tab(name)
   ---@param n string
   local apply_rename = function(n)
     require("zavigate.util").zellij_action({ "rename-tab", n })
   end
 
+  name = name or ""
   if name == "" then
     vim.ui.input({ prompt = "New tab name: " }, apply_rename)
     return
@@ -164,7 +183,7 @@ function M.move_focus(direction)
   end
 
   -- (2) try zellij tab navigation (left/right only)
-  if util.valid_directions_lr[direction] then
+  if util.validate_against_table(util.valid_directions_lr, direction) then
     util.zellij_action({ "move-focus-or-tab", direction })
     return
   end

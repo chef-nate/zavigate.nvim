@@ -1,0 +1,480 @@
+==============================================================================
+                                                             *zavigate.commands*
+
+Zavigate.Commands                          *zavigate.commands.Zavigate.Commands*
+
+    Fields: ~
+        {setup}           (fun():nil)                                   User command definitions for zavigate
+        {zavigate_cmd}    (fun(opts:{fargs:string[]}):nil)
+        {subcommand_tbl}  (table<string,Zavigate.Commands.Subcommand>)
+
+
+                                *zavigate.commands.Zavigate.Commands.Subcommand*
+Zavigate.Commands.Subcommand
+
+    Fields: ~
+        {desc}       (string)                                Subcommand description
+                                                             A single subcommand for the ':Zavigate' prefix
+        {nargs}      (NArgsValue)                            Vim command nargs value
+        {impl}       (fun(args:string[],opts:table))         Implementation
+        {complete?}  (fun(subcmd_arg_lead:string):string[])  Completion callback
+
+
+NArgsValue                                        *zavigate.commands.NArgsValue*
+
+    Variants: ~
+
+
+
+M.subcommand_tbl                              *zavigate.commands.subcommand_tbl*
+    | "0" -- none
+    | "1" -- exactly 1
+    | "*" -- any number (0+)
+    | "?" -- 0 or 1
+    | "+" -- 1 or more
+
+    Type: ~
+        (table<string,Zavigate.Commands.Subcommand>)
+
+
+M.subcommand_tbl.NewPane              *zavigate.commands.subcommand_tbl.NewPane*
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+                                    *zavigate.commands.subcommand_tbl.ClosePane*
+M.subcommand_tbl.ClosePane
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+                                     *zavigate.commands.subcommand_tbl.MovePane*
+M.subcommand_tbl.MovePane
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+                          *zavigate.commands.subcommand_tbl.ToggleFloatingPanes*
+M.subcommand_tbl.ToggleFloatingPanes
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+                         *zavigate.commands.subcommand_tbl.TogglePaneFullscreen*
+M.subcommand_tbl.TogglePaneFullscreen
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+                                   *zavigate.commands.subcommand_tbl.RenamePane*
+M.subcommand_tbl.RenamePane
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+M.subcommand_tbl.NewTab                *zavigate.commands.subcommand_tbl.NewTab*
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+                                    *zavigate.commands.subcommand_tbl.RenameTab*
+M.subcommand_tbl.RenameTab
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+                                    *zavigate.commands.subcommand_tbl.MoveFocus*
+M.subcommand_tbl.MoveFocus
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+M.subcommand_tbl.Lock                    *zavigate.commands.subcommand_tbl.Lock*
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+M.subcommand_tbl.Unlock                *zavigate.commands.subcommand_tbl.Unlock*
+
+    Type: ~
+        (Zavigate.Commands.Subcommand)
+
+
+M.zavigate_cmd({opts})                          *zavigate.commands.zavigate_cmd*
+
+    Parameters: ~
+        {opts}  ({fargs:string[]})
+
+
+M.setup()                                              *zavigate.commands.setup*
+
+
+==============================================================================
+                                                               *zavigate.config*
+
+Zavigate.Config                                *zavigate.config.Zavigate.Config*
+
+    Fields: ~
+        {options}  (Zavigate.Config.Options)                      Merged user and default options
+                                                                   Configuration management
+        {setup}    (fun(opts?:Zavigate.Config.Options.User):nil)  Setup config and user options
+
+
+Zavigate.Config.Options                *zavigate.config.Zavigate.Config.Options*
+
+    Fields: ~
+        {disable_keymaps}  (boolean)  Whether the default zavigate keymaps should be disabled
+                                       User facing configuration options
+
+
+                              *zavigate.config.Zavigate.Config.Options.Defaults*
+Zavigate.Config.Options.Defaults : Zavigate.Config.Options
+
+
+                                  *zavigate.config.Zavigate.Config.Options.User*
+Zavigate.Config.Options.User : Zavigate.Config.Options
+
+
+M.setup()                                                *zavigate.config.setup*
+
+
+==============================================================================
+                                                                 *zavigate.core*
+
+Zavigate.Core                                      *zavigate.core.Zavigate.Core*
+
+    Fields: ~
+        {new_pane}                (fun(direction_or_opts?:Zavigate.Util.DirectionDR|string[]):nil)  core pane and tab integrations
+        {close_pane}              (fun():nil)
+        {rename_pane}             (fun(name?:string):nil)
+        {resize_pane}             (fun(direction:Zavigate.Util.Direction):nil)
+        {toggle_floating_panes}   (fun():nil)
+        {toggle_pane_fullscreen}  (fun():nil)
+        {new_tab}                 (fun():nil)
+        {close_tab}               (fun():nil)
+        {rename_tab}              (fun(name?:string):nil)
+        {move_tab}                (fun():nil)
+        {move_focus}              (fun(direction:Zavigate.Util.Direction):nil)
+        {unlock}                  (fun():nil)
+        {lock}                    (fun():nil)
+
+
+M.new_pane({args})                                      *zavigate.core.new_pane*
+
+    Parameters: ~
+        {args}  (string[])
+
+
+M.close_pane()                                        *zavigate.core.close_pane*
+
+
+M.rename_pane({name})                                *zavigate.core.rename_pane*
+
+    Parameters: ~
+        {name}  (string|nil)
+
+
+M.resize_pane()                                      *zavigate.core.resize_pane*
+
+
+M.move_pane({direction})                               *zavigate.core.move_pane*
+
+    Parameters: ~
+        {direction}  (Zavigate.Util.Direction)
+
+
+M.toggle_floating_panes()                  *zavigate.core.toggle_floating_panes*
+
+
+M.toggle_pane_fullscreen()                *zavigate.core.toggle_pane_fullscreen*
+
+
+M.new_tab()                                              *zavigate.core.new_tab*
+
+
+M.close_tab()                                          *zavigate.core.close_tab*
+
+
+M.rename_tab({name})                                  *zavigate.core.rename_tab*
+
+    Parameters: ~
+        {name}  (string|nil)
+
+
+M.move_tab()                                            *zavigate.core.move_tab*
+
+
+M.move_focus({direction})                             *zavigate.core.move_focus*
+
+    Parameters: ~
+        {direction}  (Zavigate.Util.Direction)
+
+
+M.lock()                                                    *zavigate.core.lock*
+
+
+M.unlock()                                                *zavigate.core.unlock*
+
+
+==============================================================================
+                                                               *zavigate.health*
+
+Zavigate.Health                                *zavigate.health.Zavigate.Health*
+
+    Fields: ~
+        {check}  (fun():nil)  Runs ':checkhealth zavigate'
+                              Health checks for zavigate.nvim
+
+
+M.check()                                                *zavigate.health.check*
+
+
+==============================================================================
+                                                                      *zavigate*
+
+Zavigate.Plugin                                       *zavigate.Zavigate.Plugin*
+
+    Fields: ~
+        {setup}  (fun(opts?:Zavigate.Config.Options.User):nil)  Setup the plugin with the user options.
+                                                                 Plugin entry point
+
+
+M.setup()                                                       *zavigate.setup*
+
+    Returns: ~
+        (nil)
+
+
+M.new_pane({opts})                                           *zavigate.new_pane*
+
+    Parameters: ~
+        {opts}  (string[])
+
+    Returns: ~
+        (nil)
+
+
+M.close_pane()                                             *zavigate.close_pane*
+
+    Returns: ~
+        (nil)
+
+
+M.move_pane({direction})                                    *zavigate.move_pane*
+
+    Parameters: ~
+        {direction}  (Zavigate.Util.Direction)
+
+    Returns: ~
+        (nil)
+
+
+M.toggle_floating_panes()                       *zavigate.toggle_floating_panes*
+
+    Returns: ~
+        (nil)
+
+
+M.toggle_pane_fullscreen()                     *zavigate.toggle_pane_fullscreen*
+
+    Returns: ~
+        (nil)
+
+
+M.rename_pane()                                           *zavigate.rename_pane*
+
+    Returns: ~
+        (nil)
+
+
+M.new_tab()                                                   *zavigate.new_tab*
+
+    Returns: ~
+        (nil)
+
+
+M.rename_tab({name})                                       *zavigate.rename_tab*
+
+    Parameters: ~
+        {name}  (string)
+
+    Returns: ~
+        (nil)
+
+
+M.move_focus({direction})                                  *zavigate.move_focus*
+
+    Parameters: ~
+        {direction}  (Zavigate.Util.Direction)
+
+
+M.lock()                                                         *zavigate.lock*
+
+    Returns: ~
+        (nil)
+
+
+M.unlock()                                                     *zavigate.unlock*
+
+    Returns: ~
+        (nil)
+
+
+==============================================================================
+                                                              *zavigate.keymaps*
+
+Zavigate.Keymaps                             *zavigate.keymaps.Zavigate.Keymaps*
+
+    Fields: ~
+        {setup}           (fun(opts:Zavigate.Config.Options.User):nil)  Setup keymaps based on user configuration
+                                                                        Keymap registration
+        {setup_defaults}  (fun():nil)                                   Register default mappings
+
+
+Zavigate.Keymaps.Bind                   *zavigate.keymaps.Zavigate.Keymaps.Bind*
+
+    Fields: ~
+        {keymap}   (string)           Defines a single keymap binding
+        {command}  (string|function)
+        {mode}     (string|string[])
+        {desc}     (string)
+        {opts?}    (table)
+
+
+M.setup({opts})                                         *zavigate.keymaps.setup*
+
+    Parameters: ~
+        {opts}  (Zavigate.Config.Options.User)
+
+    Returns: ~
+        (nil)
+
+
+M.setup_defaults()                             *zavigate.keymaps.setup_defaults*
+
+    Returns: ~
+        (nil)
+
+
+==============================================================================
+                                                                 *zavigate.util*
+
+Zavigate.Util                                      *zavigate.util.Zavigate.Util*
+
+
+M.valid_selection_new_pane              *zavigate.util.valid_selection_new_pane*
+
+    Type: ~
+        (table<string,boolean>)
+
+
+M.valid_directions_lrud                    *zavigate.util.valid_directions_lrud*
+
+    Type: ~
+        (table<string,boolean>)
+
+
+M.valid_directions_lr                        *zavigate.util.valid_directions_lr*
+
+    Type: ~
+        (table<string,boolean>)
+
+
+M.valid_directions_dr                        *zavigate.util.valid_directions_dr*
+
+    Type: ~
+        (table<string,boolean>)
+
+
+M.hjkl_map                                              *zavigate.util.hjkl_map*
+
+    Type: ~
+        (table<string,string>)
+
+
+M.validate_against_table()                *zavigate.util.validate_against_table*
+
+    Returns: ~
+        (boolean)
+
+
+M.normalize_arg({arg})                             *zavigate.util.normalize_arg*
+
+    Parameters: ~
+        {arg}  (table|string|nil)  arg to be normalized
+
+    Returns: ~
+        (string|nil)  the argument as a string ( or nil if no argument supplied )
+
+
+M.normalize_fargs({fargs})                       *zavigate.util.normalize_fargs*
+
+    Parameters: ~
+        {fargs}  (table|string|nil)  fargs to be normalized
+
+    Returns: ~
+        (string[])  string array of all fargs supplied
+
+
+M.zellij_action({opts})                            *zavigate.util.zellij_action*
+
+    Parameters: ~
+        {opts}  (string[])  array of commands for 'zellij action ...' to execute
+
+    Returns: ~
+        (nil)
+
+
+                                                          *zavigate.util.notify*
+M.notify({msg}, {title}, {lvl?}, {opts?})
+
+    Parameters: ~
+        {msg}    (string)             -- message to notify
+        {title}  (string)             -- typically name of ucmd/function calling this
+        {lvl?}   (number)             -- defaults to INFO
+        {opts?}  (table<string,any>)  -- any additional opts
+
+
+M.info({msg}, {title}, {opts?})                             *zavigate.util.info*
+
+    Parameters: ~
+        {msg}    (string)             -- message to notify as info
+        {title}  (string)             -- typically name of ucmd/function calling this
+        {opts?}  (table<string,any>)  -- any additional vim.notify options
+
+
+M.warn({msg}, {title}, {opts?})                             *zavigate.util.warn*
+
+    Parameters: ~
+        {msg}    (string)             -- message to notify as a warning
+        {title}  (string)             -- typically name of ucmd/function calling this
+        {opts?}  (table<string,any>)  -- any additional vim.notify options
+
+
+M.error({msg}, {title}, {opts?})                           *zavigate.util.error*
+
+    Parameters: ~
+        {msg}    (string)             -- message to notify as an error
+        {title}  (string)             -- typically name of ucmd/function calling this
+        {opts?}  (table<string,any>)  -- any additional vim.notify options
+
+
+M.complete_from_list({choices}, {lead})       *zavigate.util.complete_from_list*
+
+    Parameters: ~
+        {choices}  (string[])  -- list of all possible autocomplete choices
+        {lead}     (string)    -- characters to autocomplete from
+                               @return string[] -- array containing all valid autocomplete choices
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:
