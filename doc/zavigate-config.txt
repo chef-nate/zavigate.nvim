@@ -1,0 +1,49 @@
+                                                               *zavigate-config*
+==============================================================================
+Configuration management for zavigate.nvim.                    *zavigate.config*
+
+ Merges user configuration with defaults.
+
+ This module is configured automatically by `require("zavigate").setup()`.
+
+Config                                                  *zavigate.config.Config*
+
+    Fields: ~
+        {options}  (Config.Options)                      Merged user and default options.
+                                                          Configuration management.
+        {setup}    (fun(opts?:Config.Options.User):nil)  Merge user options into defaults.
+
+
+                                                       *zavigate-config-options*
+Config.Options                                  *zavigate.config.Config.Options*
+
+    Fields: ~
+        {disable_keymaps}  (boolean)  Disable default keymaps. Default: false.
+                                       User-facing configuration options.
+
+
+Config.Options.User                        *zavigate.config.Config.Options.User*
+
+    Fields: ~
+        {disable_keymaps?}  (boolean)  Disable default keymaps. Default: false.
+                                        User-supplied options (all optional).
+
+
+Config.Options.Defaults : Config.Options*zavigate.config.Config.Options.Defaults*
+
+
+M.options                                                            *M.options*
+
+    Type: ~
+        (Config.Options)
+
+
+                                                         *zavigate-config-setup*
+M.setup({opts?})                                                       *M.setup*
+     Merge user options into defaults and store them in `M.options`.
+
+    Parameters: ~
+        {opts?}  (Config.Options.User)  Plugin options.
+
+
+vim:tw=78:ts=8:noet:ft=help:norl:

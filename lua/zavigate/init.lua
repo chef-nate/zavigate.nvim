@@ -1,5 +1,22 @@
 ---@mod zavigate
 
+---@brief [
+--- zavigate.nvim integrates Zellij movement and pane/tab navigation into Neovim.
+---
+--- Requirements
+--- - Neovim 0.9+
+--- - Zellij
+--- - zellij-autolock plugin
+---
+--- Installation (lazy.nvim)
+--- Add this to your plugin spec:
+---
+--- ```lua
+---{
+---"chef-nate/zavigate.nvim",
+---opts = {},
+---}
+---]
 ---@class Zavigate.Plugin
 --- Plugin entry point
 ---@field setup fun(opts?: Zavigate.Config.Options.User): nil Setup the plugin with the user options.
