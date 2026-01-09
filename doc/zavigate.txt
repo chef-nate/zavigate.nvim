@@ -1,0 +1,357 @@
+*zavigate.txt*          For NVIM v0.12.0          Last change: 2026 January 09
+
+==============================================================================
+Table of Contents                                 *zavigate-table-of-contents*
+
+1. Requirements                                        |zavigate-requirements|
+2. Installation                                        |zavigate-installation|
+  - lazy.nvim                                |zavigate-installation-lazy.nvim|
+  - Other                                        |zavigate-installation-other|
+3. Configuration                                      |zavigate-configuration|
+  - Keymaps                                   |zavigate-configuration-keymaps|
+4. Commands                                                |zavigate-commands|
+  - NewPane                                        |zavigate-commands-newpane|
+  - ClosePane                                    |zavigate-commands-closepane|
+  - MovePane                                      |zavigate-commands-movepane|
+  - ToggleFloatingPanes                |zavigate-commands-togglefloatingpanes|
+  - TogglePaneFullscreen              |zavigate-commands-togglepanefullscreen|
+  - RenamePane                                  |zavigate-commands-renamepane|
+  - NewTab                                          |zavigate-commands-newtab|
+  - RenameTab                                    |zavigate-commands-renametab|
+  - MoveFocus                                    |zavigate-commands-movefocus|
+  - Lock                                              |zavigate-commands-lock|
+  - Unlock                                          |zavigate-commands-unlock|
+
+==============================================================================
+1. Requirements                                        *zavigate-requirements*
+
+- Neovim 0.9+ (may work on <0.9 but has not been tested)
+- Zellij
+- Zellij must be running in the current terminal session (otherwise certain features are disabled)
+- zellij-autolock <https://github.com/fresh2dev/zellij-autolock> must be installed
+
+
+==============================================================================
+2. Installation                                        *zavigate-installation*
+
+
+LAZY.NVIM                                    *zavigate-installation-lazy.nvim*
+
+>lua
+    return {
+        "chef-nate/zavigate.nvim",
+        opts = {},
+    }
+<
+
+
+OTHER                                            *zavigate-installation-other*
+
+If using a different package manager, ensure zavigate.nvim is installed, and
+setup is called. e.g.
+
+>lua
+    require("zavigate").setup()
+<
+
+
+==============================================================================
+3. Configuration                                      *zavigate-configuration*
+
+
+KEYMAPS                                       *zavigate-configuration-keymaps*
+
+
+==============================================================================
+4. Commands                                                *zavigate-commands*
+
+All zavigate.nvim user commands use the 'Zavigate' prefix with functionality
+being exposed through subcommands.
+
+>vim
+    :Zavigate <subcommand> [argument(s)]
+<
+
+For example, to spawn a new zellij pane to the right of the active pane, the
+below command would be used:
+
+>vim
+    :Zavigate NewPane right
+<
+
+
+NEWPANE                                            *zavigate-commands-newpane*
+
+>vim
+    :Zavigate NewPane {direction}|{opts}|{none}
+<
+
+Spawns a new Zellij pane. If `{direction}` is given, a pane is created in that
+direction running the default `$SHELL`.
+
+Instead of a direction, `Floating` may be passed in to create a floating pane.
+
+Alternatively, you may omit a direction entirely and instead pass raw `zellij
+action new-pane` options.
+
+
+ARGUMENTS ~
+
+`{direction}` 'Right' | 'Down'
+
+`Floating` Spawn a floating pane.
+
+`{opts}` Options passed through to `zellij action new-pane` (see `zellij action
+new-pane --help` for reference).
+
+
+USAGE ~
+
+>vim
+    "(1) Spawn a new pane to the right of the active pane:
+    :Zavigate NewPane Right
+    
+    "(2) Spawn a floating pane:
+    :Zavigate NewPane Floating
+    
+    "(3) Spawn 'top' tui program in a new pane below the active one, and make the pane close on exit:
+    :Zavigate NewPane --direction down --close-on-exit -- top
+    
+    "(4) Spawn a new pane running 'zsh' in a floating pane using new-pane opts:
+    :Zavigate NewPane --floating --close-on-exit -- zsh
+<
+
+
+LUA ~
+
+>lua
+    require("zavigate").new_pane(direction_or_opts_or_none) ---@param direction_or_opts_or_none string|string[]|nil
+<
+
+
+CLOSEPANE                                        *zavigate-commands-closepane*
+
+>vim
+    :Zavigate ClosePane
+<
+
+Closes the currently focussed Zellij pane. ### Lua
+
+>lua
+    require("zavigate").close_pane()
+<
+
+
+MOVEPANE                                          *zavigate-commands-movepane*
+
+>vim
+    :Zavigate MovePane {direction}
+<
+
+Moves the focussed Zellij pane in the specified direction
+
+
+ARGUMENTS ~
+
+`{direction}` 'Up' | 'Down' | 'Left' | 'Right'
+
+
+USAGE ~
+
+>vim
+    :Zelij MovePane Right
+<
+
+
+LUA ~
+
+>lua
+    require("zavigate").move_pane(direction) ---@param direction string
+<
+
+
+TOGGLEFLOATINGPANES                    *zavigate-commands-togglefloatingpanes*
+
+>vim
+    :Zavigate ToggleFloatingPanes
+<
+
+Toggles the visibility of all floating panes.
+
+
+LUA ~
+
+>lua
+    require("zavigate").toggle_floating_panes()
+<
+
+
+TOGGLEPANEFULLSCREEN                  *zavigate-commands-togglepanefullscreen*
+
+>vim
+    :Zavigate TogglePaneFullscreen
+<
+
+Toggles the active pane between being fullscreen, and being tiled.
+
+
+LUA ~
+
+>lua
+    require("zavigate").toggle_pane_fullscreen()
+<
+
+
+RENAMEPANE                                      *zavigate-commands-renamepane*
+
+>vim
+    :Zavigate RenamePane {string}|{none}
+<
+
+Renames the active pane to the name provided. If no name provided, a Neovim
+popup will prompt the user for a name to input.
+
+
+ARGUMENTS ~
+
+`{string}` Any valid string.
+
+`{none}` nil.
+
+
+USAGE ~
+
+>vim
+    "(1) Renames the current pane to 'MyPaneName'
+    :Zavigate RenamePane MyPaneName
+    
+    "(2) Prompts the user to enter a new name to rename the pane to
+    :Zavigate RenamePane
+<
+
+
+LUA ~
+
+>lua
+    require("zavigate").rename_pane(name_or_nil) ---@param name_or_nil string|nil
+<
+
+
+NEWTAB                                              *zavigate-commands-newtab*
+
+>vim
+    :Zavigate NewTab
+<
+
+Creates a new Zellij tab.
+
+
+LUA ~
+
+>lua
+    require("zavigate").new_tab()
+<
+
+
+RENAMETAB                                        *zavigate-commands-renametab*
+
+>vim
+    :Zavigate RenameTab {string}|{none}
+<
+
+Renames the active Zellij tab to the name provided. If no name provided, a
+Neovim popup will prompt the user for a name to input.
+
+
+ARGUMENTS ~
+
+`{string}` Any valid string.
+
+`{none}` nil.
+
+
+USAGE ~
+
+>vim
+    "(1) Renames the current tab to 'MyTabName'
+    :Zavigate RenameTab MyTabName
+    
+    "(2) Prompts the user to enter a new name to rename the tab to
+    :Zavigate RenameTab
+<
+
+
+LUA ~
+
+>lua
+    require("zavigate").rename_tab(name_or_nil) ---@param name_or_nil string|nil
+<
+
+
+MOVEFOCUS                                        *zavigate-commands-movefocus*
+
+>vim
+    :Zavigate MoveFocus {direction}
+<
+
+The command first attempts to move focus within Neovim. If no further movement
+is possible, it then tries to shift focus to the currently active Zellij pane.
+Finally, if multiple tabs are open and the active pane is already at the edge
+in the requested direction, the focus moves to the adjacent tab in that
+direction.
+
+
+ARGUMENTS ~
+
+`{direction}` 'Up' | 'Down' | 'Left' | 'Right'
+
+
+USAGE ~
+
+>vim
+    "(1) Moves the focus from the current pane, to the pane to the left of it
+    :Zavigate MoveFocus Left
+<
+
+
+LUA ~
+
+>lua
+    require("zavigate").move_focus(direction) ---@param direction string
+<
+
+
+LOCK                                                  *zavigate-commands-lock*
+
+>vim
+    :Zavigate Lock
+<
+
+Locks Zellij.
+
+
+LUA ~
+
+>lua
+    require("zavigate").lock()
+<
+
+
+UNLOCK                                              *zavigate-commands-unlock*
+
+>vim
+    :Zavigate Unlock
+<
+
+Unlocks Zellij.
+
+
+LUA ~
+
+>lua
+    require("zavigate").unlock()
+<
+
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:
