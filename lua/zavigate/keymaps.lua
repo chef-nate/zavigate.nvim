@@ -2,8 +2,8 @@
 
 ---@class Zavigate.Keymaps
 ---Keymap registration
----@field setup fun(opts: Zavigate.Config.Options.User): nil Setup keymaps based on user configuration
----@field setup_defaults fun(): nil Register default mappings
+---@field setup fun(opts: Config.Options.User): nil Setup keymaps based on user configuration
+---@field setup_default_mappings fun(): nil Register default mappings
 local M = {}
 
 ---@class Zavigate.Keymaps.Bind
@@ -20,60 +20,63 @@ local default_mappings = {
   {
     keymap = "<A-h>",
     command = "<cmd>Zavigate MoveFocus Left<cr>",
-    mode = "n",
+    mode = "",
     desc = "Move Focus: Left",
     opts = { silent = true },
   },
   {
     keymap = "<A-j>",
     command = "<cmd>Zavigate MoveFocus Down<cr>",
-    mode = "n",
+    mode = "",
     desc = "Move Focus: Down",
     opts = { silent = true },
   },
   {
     keymap = "<A-k>",
     command = "<cmd>Zavigate MoveFocus Up<cr>",
-    mode = "n",
+    mode = "",
     desc = "Move Focus: Up",
     opts = { silent = true },
   },
   {
     keymap = "<A-l>",
     command = "<cmd>Zavigate MoveFocus Right<cr>",
-    mode = "n",
+    mode = "",
     desc = "Move Focus: Right",
     opts = { silent = true },
   },
   {
     keymap = "<A-f>",
     command = "<cmd>Zavigate ToggleFloatingPanes<cr>",
-    mode = "n",
+    mode = "",
     desc = "Toggle Floating Pane Visibility",
     opts = { silent = true },
   },
   {
     keymap = "<A-x>",
     command = "<cmd>Zavigate ClosePane<cr>",
-    mode = "n",
+    mode = "",
     desc = "Close Active Pane",
     opts = { silent = true },
   },
   {
     keymap = "<A-n>",
     command = "<cmd>Zavigate NewPane Any<cr>",
-    mode = "n",
+    mode = "",
     desc = "Create a New Pane",
     opts = { silent = true },
   },
   {
     keymap = "<A-t>",
     command = "<cmd>Zavigate NewTab<cr>",
-    mode = "n",
+    mode = "",
     desc = "Create a New Zellij Tab",
     opts = { silent = true },
   },
+}
 
+---@type Zavigate.Keymaps.Bind[]
+local extended_mappings = {
   -- Ctrl-p Pane Keymaps
   {
     keymap = "<C-p>",
@@ -138,17 +141,35 @@ local default_mappings = {
   },
 }
 
----@param opts Zavigate.Config.Options.User
+---@param opts Config.Options.User
 ---@return nil
 function M.setup(opts)
   if not opts.disable_keymaps then
-    M.setup_defaults()
+    -- default keymaps allways enabled
+    M.setup_default_mappings()
+
+    -- if extended mappings then also assign...
+    if opts.keymap_preset == "extended" then
+      M.setup_extended_mappings()
+    end
   end
 end
 
 ---@return nil
-function M.setup_defaults()
+function M.setup_default_mappings()
   for _, map in ipairs(default_mappings) do
+    vim.keymap.set(
+      map.mode,
+      map.keymap,
+      map.command,
+      vim.tbl_deep_extend("force", map.opts or {}, { desc = map.desc })
+    )
+  end
+end
+
+---@return nil
+function M.setup_extended_mappings()
+  for _, map in ipairs(extended_mappings) do
     vim.keymap.set(
       map.mode,
       map.keymap,

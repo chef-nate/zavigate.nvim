@@ -1,4 +1,3 @@
----@tag zavigate-config
 ---@mod zavigate.config Configuration management for zavigate.nvim.
 ---@brief [[
 --- Merges user configuration with defaults.
@@ -12,20 +11,26 @@
 ---@field setup fun(opts?: Config.Options.User): nil Merge user options into defaults.
 local M = {}
 
----@tag zavigate-config-options
+---@alias Config.Options.KeymapPresets
+---| '"default"' # Default: alt-hjkl and related alt key shortcut keymaps
+---| '"extended"' # Extended: default keymaps as well as ctrl-p pane keymaps
+
 ---@class Config.Options
 --- User-facing configuration options.
 ---@field disable_keymaps boolean Disable default keymaps. Default: false.
+---@field keymap_preset Config.Options.KeymapPresets Which inbuilt keymap preset to use. Default: "default".
 
 ---@class Config.Options.User
 --- User-supplied options (all optional).
 ---@field disable_keymaps? boolean Disable default keymaps. Default: false.
+---@field keymap_preset? Config.Options.KeymapPresets Specify keymap preset. Default: "default".
 
 ---@class Config.Options.Defaults: Config.Options
 
 ---@type Config.Options.Defaults
 local defaults = {
   disable_keymaps = false,
+  keymap_preset = "default",
 }
 
 ---@type Config.Options

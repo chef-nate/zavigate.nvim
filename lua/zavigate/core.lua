@@ -116,7 +116,7 @@ function M.move_pane(direction)
 
   direction = string.lower(direction)
 
-  if not util.valid_directions_lrud(direction) then
+  if not util.validate_against_table(util.valid_directions_lrud, direction, false) then
     return
   end
 
@@ -170,7 +170,7 @@ function M.move_focus(direction)
 
   direction = string.lower(direction)
 
-  if not util.validate_against_table(util.valid_directions_lrud, direction) then
+  if not util.validate_against_table(util.valid_directions_lrud, direction, false) then
     return
   end
 
@@ -183,7 +183,7 @@ function M.move_focus(direction)
   end
 
   -- (2) try zellij tab navigation (left/right only)
-  if util.validate_against_table(util.valid_directions_lr, direction) then
+  if util.validate_against_table(util.valid_directions_lr, direction, false) then
     util.zellij_action({ "move-focus-or-tab", direction })
     return
   end
