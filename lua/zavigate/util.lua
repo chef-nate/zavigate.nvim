@@ -18,6 +18,10 @@ M.valid_directions_lrud = {
   right = true,
   up = true,
   down = true,
+  Left = true,
+  Right = true,
+  Up = true,
+  Down = true,
 }
 
 ---@type table<string, boolean>
