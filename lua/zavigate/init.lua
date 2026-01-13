@@ -71,6 +71,12 @@ function M.rename_pane(name)
   require("zavigate.core").rename_pane(name)
 end
 
+---@return nil
+---@param direction? Zavigate.Util.Direction
+function M.resize_pane(direction)
+  require("zavigate.core").resize_pane(direction)
+end
+
 -- Tab Commands
 ---@return nil
 function M.new_tab()
@@ -81,6 +87,12 @@ end
 ---@return nil
 function M.rename_tab(name)
   require("zavigate.core").rename_tab(name)
+end
+
+---@param direction Zavigate.Util.DirectionLR
+---@return nil
+function M.move_tab(direction)
+  require("zavigate.core").move_tab(direction)
 end
 
 -- Misc Commands

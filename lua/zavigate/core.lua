@@ -11,7 +11,7 @@
 ---@field new_tab fun(): nil
 ---@field close_tab fun(): nil
 ---@field rename_tab fun(name?: string): nil
----@field move_tab fun(): nil
+---@field move_tab fun(direction_lr: Zavigate.Util.DirectionLR): nil
 ---@field move_focus fun(direction: Zavigate.Util.Direction): nil
 ---@field unlock fun(): nil
 ---@field lock fun(): nil
@@ -108,7 +108,25 @@ function M.rename_pane(name)
   apply_rename(name)
 end
 
-function M.resize_pane() end
+---@param direction? Zavigate.Util.Direction
+function M.resize_pane(direction)
+  local util = require("zavigate.util")
+
+  -- (1) no direction provided, so interactive resize mode triggered
+  if direction == nil then
+    util.zellij_action({ "switch-mode", "resize" })
+    return
+  end
+
+  -- (2) direction provided, so resize in specified direction
+  local dir_normalized = string.lower(direction)
+
+  if not util.validate_against_table(util.valid_directions_lrud, dir_normalized, true) then
+    return
+  end
+
+  util.zellij_action({ "resize", "increase", dir_normalized })
+end
 
 ---@param direction Zavigate.Util.Direction
 function M.move_pane(direction)
@@ -142,7 +160,10 @@ function M.new_tab()
   util.zellij_action({ "new-tab" })
 end
 
-function M.close_tab() end
+function M.close_tab()
+  local util = require("zavigate.util")
+  util.zellij_action({ "close-tab" })
+end
 
 ---@param name string|nil
 function M.rename_tab(name)
@@ -160,7 +181,18 @@ function M.rename_tab(name)
   apply_rename(name)
 end
 
-function M.move_tab() end
+---@param direction Zavigate.Util.DirectionLR
+function M.move_tab(direction)
+  local util = require("zavigate.util")
+
+  local dir_normalized = string.lower(direction) ---@type string
+
+  if not util.validate_against_table(util.valid_directions_lr, dir_normalized, true) then
+    return
+  end
+
+  util.zellij_action({ "move-tab", dir_normalized })
+end
 
 -- Misc Commands
 

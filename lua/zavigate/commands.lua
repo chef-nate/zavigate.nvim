@@ -128,6 +128,27 @@ M.subcommand_tbl.RenamePane = {
   end,
 }
 
+---@type Zavigate.Commands.Subcommand
+M.subcommand_tbl.ResizePane = {
+  desc = "Resizes the active pane in the specified direction. If none provided, interactive resize mode is started",
+  nargs = NARGS.ZERO_OR_ONE,
+
+  impl = function(args, _)
+    local args_normalized = require("zavigate.util").normalize_arg(args[1])
+
+    require("zavigate").resize_pane(args_normalized)
+  end,
+
+  complete = function(subcmd_arg_lead)
+    return require("zavigate.util").complete_from_list({
+      "Left",
+      "Right",
+      "Up",
+      "Down",
+    }, subcmd_arg_lead)
+  end,
+}
+
 -- Tab Subcommands
 ---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.NewTab = {
@@ -150,6 +171,31 @@ M.subcommand_tbl.RenameTab = {
     end
 
     require("zavigate").rename_tab(args_normalized)
+  end,
+}
+
+---@type Zavigate.Commands.Subcommand
+M.subcommand_tbl.MoveTab = {
+  desc = "Moves the active tab",
+  nargs = NARGS.ONE,
+
+  impl = function(args, _)
+    local util = require("zavigate.util")
+    local args_normalized = util.normalize_arg(args[1])
+
+    if args_normalized == nil then
+      util.error("A direction must be provided", "zavigate move_tab")
+      return
+    end
+
+    require("zavigate").move_tab(args_normalized)
+  end,
+
+  complete = function(subcmd_arg_lead)
+    return require("zavigate.util").complete_from_list({
+      "Left",
+      "Right",
+    }, subcmd_arg_lead)
   end,
 }
 

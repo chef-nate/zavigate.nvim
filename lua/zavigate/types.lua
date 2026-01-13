@@ -9,3 +9,9 @@
 ---@alias Zavigate.Util.DirectionDR
 ---| "right"
 ---| "down"
+
+---@alias Zavigate.Util.DirectionLR
+---| "left"
+---| "right"
+---| "Left"
+---| "Right"
