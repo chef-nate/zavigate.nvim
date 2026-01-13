@@ -3,10 +3,12 @@ zavigate-commands-closepane	zavigate.txt	/*zavigate-commands-closepane*
 zavigate-commands-lock	zavigate.txt	/*zavigate-commands-lock*
 zavigate-commands-movefocus	zavigate.txt	/*zavigate-commands-movefocus*
 zavigate-commands-movepane	zavigate.txt	/*zavigate-commands-movepane*
+zavigate-commands-movetab	zavigate.txt	/*zavigate-commands-movetab*
 zavigate-commands-newpane	zavigate.txt	/*zavigate-commands-newpane*
 zavigate-commands-newtab	zavigate.txt	/*zavigate-commands-newtab*
 zavigate-commands-renamepane	zavigate.txt	/*zavigate-commands-renamepane*
 zavigate-commands-renametab	zavigate.txt	/*zavigate-commands-renametab*
+zavigate-commands-resizepane	zavigate.txt	/*zavigate-commands-resizepane*
 zavigate-commands-togglefloatingpanes	zavigate.txt	/*zavigate-commands-togglefloatingpanes*
 zavigate-commands-togglepanefullscreen	zavigate.txt	/*zavigate-commands-togglepanefullscreen*
 zavigate-commands-unlock	zavigate.txt	/*zavigate-commands-unlock*

@@ -159,6 +159,34 @@ nil.
 require("zavigate").rename_pane(name_or_nil) ---@param name_or_nil string|nil
 ```
 
+## ResizePane
+```vim
+:Zavigate ResizePane {direction}|{none}
+```
+
+Resizes the pane in the specified direction. If no direction provided, an interactive resize mode is started.
+
+### Arguments
+`{direction}`
+'Left' | 'Right' | 'Up' | 'Down'
+
+`{none}`
+nil
+
+### Usage
+```vim
+" (1) Resize the pane downwards
+:Zavigate ResizePane Down
+
+" (2) Start interactive pane resize mode
+:Zavigate ResizePane
+```
+
+### Lua
+```lua
+require("zavigate").resize_pane(direction_or_none) ---@param direction_or_none string|nil
+```
+
 ## NewTab
 ```vim
 :Zavigate NewTab
@@ -196,6 +224,28 @@ nil.
 ### Lua
 ```lua
 require("zavigate").rename_tab(name_or_nil) ---@param name_or_nil string|nil
+```
+
+## MoveTab
+```vim
+Zavigate MoveTab {direction}
+```
+
+Moves the position of the active tab either left or right. A direction must be provided.
+
+### Arguments
+`{Direction}`
+'Left' | 'Right'
+
+### Usage
+```vim
+"(1) Moves the active zellij tab 1 position to the left
+Zavigate MoveTab Left
+```
+
+### Lua
+```lua
+require("zavigate").move_tab(direction) ---@param direction string
 ```
 
 ## MoveFocus

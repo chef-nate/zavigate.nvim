@@ -1,4 +1,4 @@
-*zavigate.txt*          For NVIM v0.12.0          Last change: 2026 January 09
+*zavigate.txt*          For NVIM v0.12.0          Last change: 2026 January 13
 
 ==============================================================================
 Table of Contents                                 *zavigate-table-of-contents*
@@ -16,8 +16,10 @@ Table of Contents                                 *zavigate-table-of-contents*
   - ToggleFloatingPanes                |zavigate-commands-togglefloatingpanes|
   - TogglePaneFullscreen              |zavigate-commands-togglepanefullscreen|
   - RenamePane                                  |zavigate-commands-renamepane|
+  - ResizePane                                  |zavigate-commands-resizepane|
   - NewTab                                          |zavigate-commands-newtab|
   - RenameTab                                    |zavigate-commands-renametab|
+  - MoveTab                                        |zavigate-commands-movetab|
   - MoveFocus                                    |zavigate-commands-movefocus|
   - Lock                                              |zavigate-commands-lock|
   - Unlock                                          |zavigate-commands-unlock|
@@ -237,6 +239,41 @@ LUA ~
 <
 
 
+RESIZEPANE                                      *zavigate-commands-resizepane*
+
+>vim
+    :Zavigate ResizePane {direction}|{none}
+<
+
+Resizes the pane in the specified direction. If no direction provided, an
+interactive resize mode is started.
+
+
+ARGUMENTS ~
+
+`{direction}` 'Left' | 'Right' | 'Up' | 'Down'
+
+`{none}` nil
+
+
+USAGE ~
+
+>vim
+    " (1) Resize the pane downwards
+    :Zavigate ResizePane Down
+    
+    " (2) Start interactive pane resize mode
+    :Zavigate ResizePane
+<
+
+
+LUA ~
+
+>lua
+    require("zavigate").resize_pane(direction_or_none) ---@param direction_or_none string|nil
+<
+
+
 NEWTAB                                              *zavigate-commands-newtab*
 
 >vim
@@ -285,6 +322,36 @@ LUA ~
 
 >lua
     require("zavigate").rename_tab(name_or_nil) ---@param name_or_nil string|nil
+<
+
+
+MOVETAB                                            *zavigate-commands-movetab*
+
+>vim
+    Zavigate MoveTab {direction}
+<
+
+Moves the position of the active tab either left or right. A direction must be
+provided.
+
+
+ARGUMENTS ~
+
+`{Direction}` 'Left' | 'Right'
+
+
+USAGE ~
+
+>vim
+    "(1) Moves the active zellij tab 1 position to the left
+    Zavigate MoveTab Left
+<
+
+
+LUA ~
+
+>lua
+    require("zavigate").move_tab(direction) ---@param direction string
 <
 
 
