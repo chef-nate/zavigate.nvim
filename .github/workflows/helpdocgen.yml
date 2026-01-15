@@ -1,0 +1,55 @@
+name: nvim helpdocs generation
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "doc/zavigate.md"
+
+  pull_request:
+    branches: [main]
+    paths:
+      - "doc/zavigate.md"
+
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Autogenerate docs and helptags"
+        required: false
+        default: "true"
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    name: Generate helpdocs and tags from a pandoc
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: convert pandoc to vimdoc
+        uses: kdheepak/panvimdoc@main
+        with:
+          vimdoc: "zavigate"
+          pandoc: "doc/zavigate.md"
+
+      - name: neovim install
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+
+      - name: generate nvim helptags
+        run: |
+          nvim --headless "+helptags doc" +q
+
+      - name: commit documentation
+        if: |
+          (github.event_name == 'push' && github.ref_name == 'main') ||
+          (github.event_name == 'workflow_dispatch' && inputs.commit == 'true')
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Autogenerate docs"
+          file_pattern: "doc/*.txt doc/tags"
+          branch: ${{ github.ref_name }}
