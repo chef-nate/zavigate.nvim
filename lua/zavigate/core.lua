@@ -23,7 +23,7 @@ local M = {}
 function M.new_pane(args)
   local util = require("zavigate.util")
 
-  local cwd = vim.fn.shellescape(vim.fn.getcwd())
+  local cwd = vim.fn.getcwd()
   local shell = vim.env.SHELL
 
   local function spawn_floating_pane()
