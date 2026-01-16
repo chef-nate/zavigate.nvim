@@ -12,7 +12,11 @@ local M = {}
 ---@field desc string Subcommand description
 ---@field nargs NArgsValue Vim command nargs value
 ---@field impl fun(args: string[], opts: table) Implementation
----@field complete? fun(subcmd_arg_lead: string): string[] Completion callback
+---@field choices? string[] completion choices
+
+---@class Zavigate.Commands.Subcommands.CompletionChoice
+---A single completion choice for a subcommand
+---@field choice string
 
 ---@alias NArgsValue
 ---| "0" -- none
@@ -24,34 +28,41 @@ local M = {}
 ---@type table<string, Zavigate.Commands.Subcommand>
 M.subcommand_tbl = {}
 
----@type table<string, NArgsValue>
+---@enum Zavigate.Commands.Nargs
 local NARGS = {
   NONE = "0",
   ONE = "1",
-  MANY = "*",
   ZERO_OR_ONE = "?",
+  ZERO_OR_MORE = "*",
   ONE_OR_MORE = "+",
+}
+
+---@type table<Zavigate.Commands.Nargs, string?>
+local NARGS_megacmd = {
+  [NARGS.NONE] = nil,
+  [NARGS.ONE] = nil,
+  [NARGS.ZERO_OR_ONE] = "?",
+  [NARGS.ZERO_OR_MORE] = "*",
+  [NARGS.ONE_OR_MORE] = "+",
 }
 
 -- Pane Subcommands
 ---@type Zavigate.Commands.Subcommand
 M.subcommand_tbl.NewPane = {
   desc = "Opens a new Zellij pane in the specified direction.",
-  nargs = NARGS.MANY,
+  nargs = NARGS.ZERO_OR_MORE,
 
   impl = function(args, _)
     local args_normalized = require("zavigate.util").normalize_fargs(args)
     require("zavigate").new_pane(args_normalized)
   end,
 
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Down",
-      "Right",
-      "Floating",
-      "Any",
-    }, subcmd_arg_lead)
-  end,
+  choices = {
+    "Down",
+    "Right",
+    "Floating",
+    "Any",
+  },
 }
 
 ---@type Zavigate.Commands.Subcommand
@@ -83,14 +94,12 @@ M.subcommand_tbl.MovePane = {
     require("zavigate").move_pane(direction)
   end,
 
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Up",
-      "Down",
-      "Left",
-      "Right",
-    }, subcmd_arg_lead)
-  end,
+  choices = {
+    "Up",
+    "Down",
+    "Left",
+    "Right",
+  },
 }
 
 ---@type Zavigate.Commands.Subcommand
@@ -139,14 +148,12 @@ M.subcommand_tbl.ResizePane = {
     require("zavigate").resize_pane(args_normalized)
   end,
 
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Left",
-      "Right",
-      "Up",
-      "Down",
-    }, subcmd_arg_lead)
-  end,
+  choices = {
+    "Up",
+    "Down",
+    "Left",
+    "Right",
+  },
 }
 
 -- Tab Subcommands
@@ -191,12 +198,10 @@ M.subcommand_tbl.MoveTab = {
     require("zavigate").move_tab(args_normalized)
   end,
 
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Left",
-      "Right",
-    }, subcmd_arg_lead)
-  end,
+  choices = {
+    "Left",
+    "Right",
+  },
 }
 
 -- Misc Subcommands
@@ -219,14 +224,12 @@ M.subcommand_tbl.MoveFocus = {
     require("zavigate").move_focus(direction)
   end,
 
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Up",
-      "Down",
-      "Left",
-      "Right",
-    }, subcmd_arg_lead)
-  end,
+  choices = {
+    "Up",
+    "Down",
+    "Left",
+    "Right",
+  },
 }
 
 ---@type Zavigate.Commands.Subcommand
@@ -267,7 +270,7 @@ M.zavigate_cmd = function(opts)
   subcommand.impl(args, opts)
 end
 
-function M.setup()
+local function setup_legacy()
   vim.api.nvim_create_user_command("Zavigate", M.zavigate_cmd, {
     nargs = NARGS.ONE_OR_MORE,
     desc = "Zavigate Description",
@@ -278,10 +281,13 @@ function M.setup()
         subcmd_key
         and subcmd_arg_lead
         and M.subcommand_tbl[subcmd_key]
-        and M.subcommand_tbl[subcmd_key].complete
+        and M.subcommand_tbl[subcmd_key].choices ~= nil
       then
         -- The subcommand has completions. Return them.
-        return M.subcommand_tbl[subcmd_key].complete(subcmd_arg_lead)
+        return require("zavigate.util").complete_from_list(
+          M.subcommand_tbl[subcmd_key].choices,
+          subcmd_arg_lead
+        )
       end
       -- Check if cmdline is a subcommand
       if cmdline:match("^['<,'>]*Zavigate[!]*%s+%w*$") then
@@ -296,6 +302,60 @@ function M.setup()
       end
     end,
   })
+end
+
+local function setup_cmdparse()
+  local cmdparse = require("mega.cmdparse")
+
+  local parser = cmdparse.ParameterParser.new({
+    name = "Zavigate",
+    help = "Zavigate Commands",
+  })
+
+  local subparsers = parser:add_subparsers({
+    destination = "subcommand",
+    help = "Zavigate Subcommands",
+  })
+
+  local keys = vim.tbl_keys(M.subcommand_tbl)
+  table.sort(keys)
+
+  for _, name in ipairs(keys) do
+    local entry = M.subcommand_tbl[name] ---@type Zavigate.Commands.Subcommand
+
+    local sub = subparsers:add_parser({
+      name = name,
+      help = entry.desc,
+    })
+
+    if entry.choices then
+      sub:add_parameter({
+        name = "args",
+        choices = entry.choices,
+        nargs = "*",
+        help = "test123",
+      })
+    end
+
+    sub:set_execute(function(data)
+      local args = data.namespace.args or {}
+      local opts = data.options or {}
+
+      entry.impl(args, opts)
+    end)
+  end
+
+  cmdparse.create_user_command(parser)
+end
+
+function M.setup()
+  local mega_installed, _ = pcall(require, "mega.cmdparse")
+  if not mega_installed then
+    setup_legacy()
+    return
+  end
+
+  setup_cmdparse()
 end
 
 return M

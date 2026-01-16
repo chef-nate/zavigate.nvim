@@ -33,14 +33,10 @@ local function minimium_nvim_installed()
 end
 
 ---@return boolean
-local function zellij_autolock_installed()
-  ---TODO: Implement (stub)
-  -- query zellij for zellij plugins directory
-  local check_obj = vim.system({ "zellij", "setup", "--check" }, { text = true }):wait(1000) ---@type vim.SystemCompleted
-  -- parse output for plugins
-  local plugin_dir = check_obj.stdout:match('%[PLUGIN DIR%]%s*:%s*"?([^"\r\n]+)"?')
-  -- search directory for autolock
-  return false
+local function mega_cmdparse_installed()
+  local ok, _ = pcall(require, "mega.cmdparse")
+
+  return ok
 end
 
 function M.check()
@@ -72,6 +68,15 @@ function M.check()
     -- end
   else
     vim.health.error("Zellij executable not found")
+  end
+
+  -- Check if mega.cmdparse is installed
+  if mega_cmdparse_installed() then
+    vim.health.ok("mega.cmdparse is installed")
+  else
+    vim.health.error(
+      "mega.cmdparse is required for completion. Completion functionality will be disabled."
+    )
   end
 end
 
