@@ -2,7 +2,7 @@
 
 ---@class Zavigate.Keymaps
 ---Keymap registration
----@field setup fun(opts: Config.Options.User): nil Setup keymaps based on user configuration
+---@field setup fun(opts: Zavigate.Config.Options.User): nil Setup keymaps based on user configuration
 ---@field setup_default_mappings fun(): nil Register default mappings
 local M = {}
 
@@ -141,7 +141,7 @@ local extended_mappings = {
   },
 }
 
----@param opts Config.Options.User
+---@param opts Zavigate.Config.Options.User
 ---@return nil
 function M.setup(opts)
   if not opts.disable_keymaps then
