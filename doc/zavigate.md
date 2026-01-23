@@ -2,7 +2,6 @@
 - Neovim 0.9+ (may work on <0.9 but has not been tested)
 - Zellij
 - Zellij must be running in the current terminal session (otherwise certain features are disabled)
-- [zellij-autolock](https://github.com/fresh2dev/zellij-autolock) must be installed
 
 # Installation
 ## lazy.nvim

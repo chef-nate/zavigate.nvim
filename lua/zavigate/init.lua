@@ -6,7 +6,6 @@
 --- Requirements
 --- - Neovim 0.9+
 --- - Zellij
---- - zellij-autolock plugin
 ---
 --- Installation (lazy.nvim)
 --- Add this to your plugin spec:
