@@ -19,11 +19,13 @@ local M = {}
 --- User-facing configuration options.
 ---@field disable_keymaps boolean Disable default keymaps. Default: false.
 ---@field keymap_preset Config.Options.KeymapPresets Which inbuilt keymap preset to use. Default: "default".
+---@field autolock_zellij boolean Disable zellij keybinds when in neovim so it cant conflict (i.e. lock keybinds). Default: true
 
 ---@class Config.Options.User
 --- User-supplied options (all optional).
 ---@field disable_keymaps? boolean Disable default keymaps. Default: false.
 ---@field keymap_preset? Config.Options.KeymapPresets Specify keymap preset. Default: "default".
+---@field autolock_zellij? boolean Lock Zellij keybinds automatically
 
 ---@class Config.Options.Defaults: Config.Options
 
@@ -31,6 +33,7 @@ local M = {}
 local defaults = {
   disable_keymaps = false,
   keymap_preset = "default",
+  autolock_zellij = true,
 }
 
 ---@type Config.Options
