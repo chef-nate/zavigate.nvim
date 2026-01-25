@@ -15,9 +15,18 @@ e.g. With `lazy.nvim`:
 ```lua
 return {
     "chef-nate/zavigate.nvim",
+
+    dependencies = {
+      "ColinKennedy/mega.cmdparse",
+      dependencies = { "ColinKennedy/mega.logging" },
+      version = "v1.*",
+    },
+
     opts = {},
 }
 ```
+**Note:** When using `lazy.nvim` with `luarocks` installed, `mega.cmdparse` and `mega.logging` dependencies should be
+automatically installed by `lazy.nvim` and therefore do not have to be included in the `dependencies = {...}` block.
 
 ### Customization
 All opts as well as their defaults as below:
@@ -25,6 +34,8 @@ All opts as well as their defaults as below:
 ```lua
 opts = {
     disable_keymaps = false ---@type boolean Disables the default keymaps
+    keymap_preset = "default" | "extended" ---@type string Which keymap preset to use
+    autolock_zellij = true ---@type boolean Whether neovim should automatically lock zellij
 }
 ```
 

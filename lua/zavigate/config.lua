@@ -19,11 +19,13 @@ local M = {}
 --- User-facing configuration options.
 ---@field disable_keymaps boolean Disable default keymaps. Default: false.
 ---@field keymap_preset Zavigate.Config.Options.KeymapPresets Which inbuilt keymap preset to use. Default: "default".
+---@field autolock_zellij boolean Whether neovim should automatically lock zellij its the active pane
 
 ---@class Zavigate.Config.Options.User
 --- User-supplied options (all optional).
 ---@field disable_keymaps? boolean Disable default keymaps. Default: false.
 ---@field keymap_preset? Zavigate.Config.Options.KeymapPresets Specify keymap preset. Default: "default".
+---@field autolock_zellij boolean Whether neovim should automatically lock zellij its the active pane
 
 ---@class Zavigate.Config.Options.Defaults: Zavigate.Config.Options
 
