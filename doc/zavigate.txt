@@ -1,4 +1,4 @@
-*zavigate.txt*           For NVIM v0.8.0          Last change: 2026 January 23
+*zavigate.txt*           For NVIM v0.8.0          Last change: 2026 January 25
 
 ==============================================================================
 Table of Contents                                 *zavigate-table-of-contents*
@@ -41,9 +41,20 @@ LAZY.NVIM                                    *zavigate-installation-lazy.nvim*
 >lua
     return {
         "chef-nate/zavigate.nvim",
+    
+        dependencies = {
+          "ColinKennedy/mega.cmdparse",
+          dependencies = { "ColinKennedy/mega.logging" },
+          version = "v1.*",
+        },
+    
         opts = {},
     }
 <
+
+**Note:** If using `lazy.nvim`, and have `luarocks` installed, `mega.cmdparse`
+and `mega.logging` dependencies should get automatically installed, and do not
+need to be included in a `dependencies={...}` block.
 
 
 OTHER                                            *zavigate-installation-other*
