@@ -32,6 +32,13 @@ local function minimium_nvim_installed()
   return false
 end
 
+---@return boolean
+local function mega_cmdparse_installed()
+  local ok, _ = pcall(require, "mega.cmdparse")
+
+  return ok
+end
+
 function M.check()
   vim.health.start("zavigate.nvim")
 
@@ -54,6 +61,15 @@ function M.check()
     end
   else
     vim.health.error("Zellij executable not found")
+  end
+
+  -- Check if mega.cmdparse is installed
+  if mega_cmdparse_installed() then
+    vim.health.ok("mega.cmdparse is installed")
+  else
+    vim.health.error(
+      "mega.cmdparse is required for completion. Completion functionality will be disabled."
+    )
   end
 end
 

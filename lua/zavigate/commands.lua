@@ -1,301 +1,112 @@
 ---@mod zavigate.commands
 
 ---@class Zavigate.Commands
----User command definitions for zavigate
+---User command setup for zavigate.nvim
 ---@field setup fun(): nil
----@field zavigate_cmd fun(opts: {fargs:  string[]}): nil
----@field subcommand_tbl table<string, Zavigate.Commands.Subcommand>
 local M = {}
 
 ---@class Zavigate.Commands.Subcommand
----A single subcommand for the ':Zavigate' prefix
----@field desc string Subcommand description
----@field nargs NArgsValue Vim command nargs value
----@field impl fun(args: string[], opts: table) Implementation
----@field complete? fun(subcmd_arg_lead: string): string[] Completion callback
+---@field name string Command Name
+---@field desc string Command description
+---@field impl fun(data: table) Implementation
+---@field choices? Zavigate.Commands.Subcommand.GroupedArguments[] | fun(data: table): string[] Completion for command arguments
 
----@alias NArgsValue
----| "0" -- none
----| "1" -- exactly 1
----| "*" -- any number (0+)
----| "?" -- 0 or 1
----| "+" -- 1 or more
+---@alias Zavigate.Commands.Subcommand.Argument string Option name (e.g. 'Down' or '--floating')
 
----@type table<string, Zavigate.Commands.Subcommand>
-M.subcommand_tbl = {}
+---@class Zavigate.Commands.Subcommand.GroupedArguments
+---@field group string grouped name to identify arguments
+---@field parameter? Zavigate.Commands.Subcommand.Argument[] array of different grouped arguments
+---@field nargs mega.cmdparse.MultiNumber number of arguments taken
+---@field help string help description for the subcommand options
+---@field required boolean whether at least one argument is required for the ucmd
 
----@type table<string, NArgsValue>
-local NARGS = {
-  NONE = "0",
-  ONE = "1",
-  MANY = "*",
-  ZERO_OR_ONE = "?",
-  ONE_OR_MORE = "+",
-}
+local function setup_legacy()
+  require("zavigate.util").warn(
+    "mega.cmdparse not installed. zavigate usercommands are disabled.",
+    "zavigate.nvim"
+  )
+end
 
--- Pane Subcommands
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.NewPane = {
-  desc = "Opens a new Zellij pane in the specified direction.",
-  nargs = NARGS.MANY,
+---@return Zavigate.Commands.Subcommand[]
+local function gather_subcommands()
+  local res = {} ---@type Zavigate.Commands.Subcommand[]
+  -- gather all subcommand file paths
+  local files = vim.api.nvim_get_runtime_file("lua/zavigate/subcommands/*.lua", true)
 
-  impl = function(args, _)
-    local args_normalized = require("zavigate.util").normalize_fargs(args)
-    require("zavigate").new_pane(args_normalized)
-  end,
+  for _, file in ipairs(files) do
+    -- get the file basename
+    local filename = vim.fs.basename(file)
 
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Down",
-      "Right",
-      "Floating",
-      "Any",
-    }, subcmd_arg_lead)
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.ClosePane = {
-  desc = "",
-  nargs = NARGS.NONE,
-
-  impl = function(_, _)
-    require("zavigate").close_pane()
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.MovePane = {
-  desc = "",
-  nargs = NARGS.ONE,
-
-  impl = function(args, _)
-    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Zavigate.Util.Direction|nil
-
-    if direction == nil then
-      require("zavigate.util").error(
-        string.format("Invalid direction: '%s' is not a valid argument", tostring(args[1])),
-        "Zavigate MoveFocus"
-      )
-      return
-    end
-
-    require("zavigate").move_pane(direction)
-  end,
-
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Up",
-      "Down",
-      "Left",
-      "Right",
-    }, subcmd_arg_lead)
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.ToggleFloatingPanes = {
-  desc = "",
-  nargs = NARGS.NONE,
-
-  impl = function(_, _)
-    require("zavigate").toggle_floating_panes()
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.TogglePaneFullscreen = {
-  desc = "",
-  nargs = NARGS.NONE,
-
-  impl = function(_, _)
-    require("zavigate").toggle_pane_fullscreen()
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.RenamePane = {
-  desc = "",
-  nargs = NARGS.ZERO_OR_ONE,
-
-  impl = function(args, _)
-    local args_normalized = require("zavigate.util").normalize_arg(args[1])
-    if args_normalized == nil then
-      args_normalized = ""
-    end
-
-    require("zavigate").rename_pane(args_normalized)
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.ResizePane = {
-  desc = "Resizes the active pane in the specified direction. If none provided, interactive resize mode is started",
-  nargs = NARGS.ZERO_OR_ONE,
-
-  impl = function(args, _)
-    local args_normalized = require("zavigate.util").normalize_arg(args[1])
-
-    require("zavigate").resize_pane(args_normalized)
-  end,
-
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Left",
-      "Right",
-      "Up",
-      "Down",
-    }, subcmd_arg_lead)
-  end,
-}
-
--- Tab Subcommands
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.NewTab = {
-  desc = "Opens a new Zellij tab",
-  nargs = NARGS.NONE,
-  impl = function(_, _)
-    require("zavigate").new_tab()
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.RenameTab = {
-  desc = "Renames the active tab",
-  nargs = NARGS.ZERO_OR_ONE,
-
-  impl = function(args, _)
-    local args_normalized = require("zavigate.util").normalize_arg(args[1])
-    if args_normalized == nil then
-      args_normalized = ""
-    end
-
-    require("zavigate").rename_tab(args_normalized)
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.MoveTab = {
-  desc = "Moves the active tab",
-  nargs = NARGS.ONE,
-
-  impl = function(args, _)
-    local util = require("zavigate.util")
-    local args_normalized = util.normalize_arg(args[1])
-
-    if args_normalized == nil then
-      util.error("A direction must be provided", "zavigate move_tab")
-      return
-    end
-
-    require("zavigate").move_tab(args_normalized)
-  end,
-
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Left",
-      "Right",
-    }, subcmd_arg_lead)
-  end,
-}
-
--- Misc Subcommands
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.MoveFocus = {
-  desc = "",
-  nargs = NARGS.ONE,
-
-  impl = function(args, _)
-    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Zavigate.Util.Direction|nil
-
-    if direction == nil then
-      require("zavigate.util").error(
-        string.format("Invalid direction: '%s' is not a valid argument", tostring(args[1])),
-        "Zavigate MoveFocus"
-      )
-      return
-    end
-
-    require("zavigate").move_focus(direction)
-  end,
-
-  complete = function(subcmd_arg_lead)
-    return require("zavigate.util").complete_from_list({
-      "Up",
-      "Down",
-      "Left",
-      "Right",
-    }, subcmd_arg_lead)
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.Lock = {
-  desc = "Lock Zellij",
-  nargs = NARGS.NONE,
-
-  impl = function(_, _)
-    require("zavigate").lock()
-  end,
-}
-
----@type Zavigate.Commands.Subcommand
-M.subcommand_tbl.Unlock = {
-  desc = "Unlock Zellij",
-  nargs = NARGS.NONE,
-
-  impl = function(_, _)
-    require("zavigate").unlock()
-  end,
-}
-
----@param opts { fargs: string[] }
-M.zavigate_cmd = function(opts)
-  local fargs = opts.fargs
-  local subcommand_key = fargs[1]
-
-  local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
-  local subcommand = M.subcommand_tbl[subcommand_key]
-  if not subcommand then
-    require("zavigate.util").warn(
-      string.format("Zavigate: Unknown Command: %s", tostring(subcommand_key)),
-      "Zavigate"
-    )
-    return
+    -- stip .lua from name
+    filename = filename:gsub("%.lua", "")
+    table.insert(res, require(string.format("zavigate.subcommands.%s", filename)))
   end
 
-  subcommand.impl(args, opts)
+  return res
+end
+
+local function setup_cmdparse()
+  local cmdparse = require("mega.cmdparse")
+
+  -- create :Zavigate
+  local zav_parser = cmdparse.ParameterParser.new({
+    name = "Zavigate",
+    help = "Zavigate commands",
+  })
+
+  -- glob all subcommands in 'subcommands/' directory
+  local subcommands = gather_subcommands() ---@type Zavigate.Commands.Subcommand[]
+
+  -- add subcommands and completion to subparser
+  local zav_subparser = zav_parser:add_subparsers({
+    destination = "subcommand",
+    help = "zavigate subcommands",
+  })
+
+  for _, subcmd in ipairs(subcommands) do
+    if subcmd == nil or subcmd.name == nil or subcmd.impl == nil or subcmd.desc == nil then
+      goto continue
+    end
+
+    local sub = zav_subparser:add_parser({
+      name = subcmd.name,
+      help = subcmd.desc,
+    })
+
+    -- check if this subcommand offers completion and setup if so
+    if subcmd.choices ~= nil then
+      -- function is also valid for choices...
+      if type(subcmd.choices) ~= "function" then
+        -- array of subcommand arguments so
+
+        ---@param groupedarg Zavigate.Commands.Subcommand.GroupedArguments
+        for _, groupedarg in ipairs(subcmd.choices) do
+          sub:add_parameter({
+            name = groupedarg.group,
+            nargs = groupedarg.nargs,
+            help = groupedarg.help,
+            choices = groupedarg.parameter,
+            required = groupedarg.required,
+          })
+        end
+      end
+    end
+
+    sub:set_execute(subcmd.impl)
+    ::continue::
+  end
+
+  cmdparse.create_user_command(zav_parser)
 end
 
 function M.setup()
-  vim.api.nvim_create_user_command("Zavigate", M.zavigate_cmd, {
-    nargs = NARGS.ONE_OR_MORE,
-    desc = "Zavigate Description",
-    complete = function(arg_lead, cmdline, _)
-      -- Get the subcommand.
-      local subcmd_key, subcmd_arg_lead = cmdline:match("^['<,'>]*Zavigate[!]*%s(%S+)%s(.*)$")
-      if
-        subcmd_key
-        and subcmd_arg_lead
-        and M.subcommand_tbl[subcmd_key]
-        and M.subcommand_tbl[subcmd_key].complete
-      then
-        -- The subcommand has completions. Return them.
-        return M.subcommand_tbl[subcmd_key].complete(subcmd_arg_lead)
-      end
-      -- Check if cmdline is a subcommand
-      if cmdline:match("^['<,'>]*Zavigate[!]*%s+%w*$") then
-        -- Filter subcommands that match
-        local subcommand_keys = vim.tbl_keys(M.subcommand_tbl)
-        return vim
-          .iter(subcommand_keys)
-          :filter(function(key)
-            return key:find(arg_lead) ~= nil
-          end)
-          :totable()
-      end
-    end,
-  })
+  local mega_installed, _ = pcall(require, "mega.cmdparse")
+  if not mega_installed then
+    setup_legacy()
+    return
+  end
+
+  setup_cmdparse()
 end
 
 return M
