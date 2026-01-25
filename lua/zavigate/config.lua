@@ -31,6 +31,7 @@ local M = {}
 local defaults = {
   disable_keymaps = false,
   keymap_preset = "default",
+  autolock_zellij = true,
 }
 
 ---@type Zavigate.Config.Options

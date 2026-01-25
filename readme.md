@@ -7,7 +7,6 @@ layout management all from inside Neovim.
 - Neovim 0.9+ (may work on <0.9 but has not been tested)
 - Zellij
 - Zellij must be running in the current terminal session (otherwise certain features are disabled)
-- [zellij-autolock](https://github.com/fresh2dev/zellij-autolock) must be installed
 
 ## Installation
 Install using your preferred plugin manager.
@@ -17,27 +16,6 @@ e.g. With `lazy.nvim`:
 return {
     "chef-nate/zavigate.nvim",
     opts = {},
-}
-```
-
-Additionally, zellij-autolock must also installed. To do so navigate to your Zellij config (by default found at
-```~/.config/zellij/config.kdl```) and add zellij-autolock to your plugins:
-```
-plugins = {
-    autolock location="https://github.com/fresh2dev/zellij-autolock/releases/latest/download/zellij-autolock.wasm" {
-        triggers "nvim|vim|v|nv"
-        watch_interval "1.0"
-        watch_triggers "fzf|zoxide|atuin|atac"
-    }
-    //...
-}
-```
-
-And then add it to the load plugins section:
-```
-load_plugins {
-    autolock
-    //...
 }
 ```
 

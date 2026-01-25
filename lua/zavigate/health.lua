@@ -59,13 +59,6 @@ function M.check()
     else
       vim.health.warn("Not running inside of Zellij, some functionality has been disabled")
     end
-
-    -- Check if autolock is installed
-    -- if zellij_autolock_installed() then
-    --   vim.health.ok("Zellij autolock plugin is installed")
-    -- else
-    --   vim.health.error("Zellij autolock plugin is required")
-    -- end
   else
     vim.health.error("Zellij executable not found")
   end

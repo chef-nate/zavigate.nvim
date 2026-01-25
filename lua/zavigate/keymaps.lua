@@ -152,6 +152,10 @@ function M.setup(opts)
     if opts.keymap_preset == "extended" then
       M.setup_extended_mappings()
     end
+
+    if opts.autolock_zellij then
+      M.setup_autolock_autocmd()
+    end
   end
 end
 
@@ -177,6 +181,23 @@ function M.setup_extended_mappings()
       vim.tbl_deep_extend("force", map.opts or {}, { desc = map.desc })
     )
   end
+end
+
+---@return nil
+function M.setup_autolock_autocmd()
+  vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+    group = vim.api.nvim_create_augroup("zavigate_lock", {}),
+    callback = function()
+      require("zavigate").lock()
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ "FocusLost", "VimLeave" }, {
+    group = vim.api.nvim_create_augroup("zavigate_unlock", {}),
+    callback = function()
+      require("zavigate").unlock()
+    end,
+  })
 end
 
 return M

@@ -1,4 +1,4 @@
-*zavigate.txt*          For NVIM v0.12.0          Last change: 2026 January 13
+*zavigate.txt*           For NVIM v0.8.0          Last change: 2026 January 23
 
 ==============================================================================
 Table of Contents                                 *zavigate-table-of-contents*
@@ -30,7 +30,6 @@ Table of Contents                                 *zavigate-table-of-contents*
 - Neovim 0.9+ (may work on <0.9 but has not been tested)
 - Zellij
 - Zellij must be running in the current terminal session (otherwise certain features are disabled)
-- zellij-autolock <https://github.com/fresh2dev/zellij-autolock> must be installed
 
 
 ==============================================================================
