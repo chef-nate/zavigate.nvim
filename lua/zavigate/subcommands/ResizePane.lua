@@ -15,13 +15,13 @@ local M = {
       group = "direction",
       help = "Specified direction to resize the pane towards",
 
-      args = {
+      parameter = {
         "Up",
         "Down",
         "Left",
         "Right",
       },
-      nargs = "*",
+      nargs = 1,
       required = false,
     },
   },

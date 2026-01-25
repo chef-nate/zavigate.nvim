@@ -9,13 +9,13 @@ local M = {}
 ---@field name string Command Name
 ---@field desc string Command description
 ---@field impl fun(data: table) Implementation
----@field choices? Zavigate.Commands.Subcommand.GroupedArguments[] | fun(data: table): string[] | nil Completion for command arguments
+---@field choices? Zavigate.Commands.Subcommand.GroupedArguments[] | fun(data: table): string[] Completion for command arguments
 
 ---@alias Zavigate.Commands.Subcommand.Argument string Option name (e.g. 'Down' or '--floating')
 
 ---@class Zavigate.Commands.Subcommand.GroupedArguments
 ---@field group string grouped name to identify arguments
----@field args? Zavigate.Commands.Subcommand.Argument[] array of different grouped arguments
+---@field parameter? Zavigate.Commands.Subcommand.Argument[] array of different grouped arguments
 ---@field nargs mega.cmdparse.MultiNumber number of arguments taken
 ---@field help string help description for the subcommand options
 ---@field required boolean whether at least one argument is required for the ucmd
@@ -85,7 +85,7 @@ local function setup_cmdparse()
             name = groupedarg.group,
             nargs = groupedarg.nargs,
             help = groupedarg.help,
-            choices = groupedarg.args,
+            choices = groupedarg.parameter,
             required = groupedarg.required,
           })
         end

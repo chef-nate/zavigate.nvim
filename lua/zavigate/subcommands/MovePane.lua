@@ -5,7 +5,7 @@ local M = {
 
   impl = function(data)
     local args = (data.namespace and data.namespace.direction) or {}
-    local direction = require("zavigate.util").normalize_arg(args[1])
+    local direction = require("zavigate.util").normalize_arg(args)
 
     require("zavigate").move_pane(direction)
   end,
@@ -16,7 +16,7 @@ local M = {
       group = "direction",
       help = "Specified direction to move the active pane towards",
 
-      args = {
+      parameter = {
         "Up",
         "Down",
         "Left",

@@ -16,6 +16,8 @@ description = {
 dependencies = {
   "lua >= 5.1",
   "lpeg",
+  "mega.cmdparse",
+  "mega.logging",
 }
 
 test_dependencies = {

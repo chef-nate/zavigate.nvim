@@ -71,11 +71,8 @@ end
 ---@return string|nil normalized the argument as a string ( or nil if no argument supplied )
 function M.normalize_arg(arg)
   if type(arg) == "table" then
-    if type(arg.args) == "string" and arg.args ~= "" then
-      return arg.args
-    else
-      return nil
-    end
+    local arg_key = vim.tbl_keys(arg)[1]
+    return arg[arg_key]
   end
 
   if type(arg) == "string" or arg == nil then

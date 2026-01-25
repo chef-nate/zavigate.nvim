@@ -5,7 +5,7 @@ local M = {
 
   impl = function(data)
     local args = (data.namespace and data.namespace.direction) or {}
-    local direction = require("zavigate.util").normalize_arg(args[1]) ---@type Zavigate.Util.Direction
+    local direction = require("zavigate.util").normalize_arg(args) ---@type Zavigate.Util.Direction
     require("zavigate").move_focus(direction)
   end,
 
@@ -15,13 +15,13 @@ local M = {
       group = "direction",
       help = "Specified direction to move focus towards",
 
-      args = {
+      parameter = {
         "Up",
         "Down",
         "Left",
         "Right",
       },
-      nargs = "*",
+      nargs = 1,
       required = true,
     },
   },
