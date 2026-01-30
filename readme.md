@@ -18,15 +18,14 @@ return {
 
     dependencies = {
       "ColinKennedy/mega.cmdparse",
-      dependencies = { "ColinKennedy/mega.logging" },
-      version = "v1.*",
+      "ColinKennedy/mega.logging",
     },
 
-    opts = {},
+    opts = {
+        keymap_preset = "extended",
+    },
 }
 ```
-**Note:** When using `lazy.nvim` with `luarocks` installed, `mega.cmdparse` and `mega.logging` dependencies should be
-automatically installed by `lazy.nvim` and therefore do not have to be included in the `dependencies = {...}` block.
 
 ### Customization
 All opts as well as their defaults as below:

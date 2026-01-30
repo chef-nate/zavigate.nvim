@@ -11,15 +11,12 @@ return {
 
     dependencies = {
       "ColinKennedy/mega.cmdparse",
-      dependencies = { "ColinKennedy/mega.logging" },
-      version = "v1.*",
+      "ColinKennedy/mega.logging",
     },
 
     opts = {},
 }
 ```
-**Note:** If using `lazy.nvim`, and have `luarocks` installed, `mega.cmdparse` and `mega.logging` dependencies should
-get automatically installed, and do not need to be included in a `dependencies={...}` block.
 
 ## Other
 If using a different package manager, ensure zavigate.nvim is installed, and setup is called. e.g.
