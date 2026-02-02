@@ -25,6 +25,7 @@ function M.new_pane(args)
 
   local cwd = vim.fn.getcwd()
   local shell = vim.env.SHELL
+  local shell_name = vim.fn.fnamemodify(vim.o.shell, ":t")
 
   local function spawn_floating_pane()
     util.zellij_action({
@@ -33,6 +34,8 @@ function M.new_pane(args)
       "--floating",
       "--cwd",
       cwd,
+      "--name",
+      shell_name,
       "--",
       shell,
     })
