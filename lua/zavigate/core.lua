@@ -74,6 +74,8 @@ function M.new_pane(args)
       "--close-on-exit",
       "--cwd",
       cwd,
+      "--name",
+      shell_name,
       "--",
       shell,
     })
@@ -86,6 +88,8 @@ function M.new_pane(args)
     selection,
     "--cwd",
     cwd,
+    "--name",
+    shell_name,
     "--",
     shell,
   })
